@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kirill Tsytkin — Creative Director</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --color-primary:   #0A0A0A;
+      --color-secondary: #FAFAFA;
+      --color-tertiary:  #D4D4D8;
+      --color-muted:     #71717A;
+      --color-subtle:    #A1A1AA;
+      --color-surface:   #F4F4F5;
+
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  16px;
+      --space-4:  32px;
+      --space-5:  48px;
+      --space-6:  64px;
+      --space-8:  96px;
+      --space-10: 128px;
+
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --max-width: 1080px;
+      --gutter: 48px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Container ───────────────────────────────── */
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    /* ─── Header ──────────────────────────────────── */
+
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background-color: var(--color-secondary);
+      border-bottom: 1px solid var(--color-tertiary);
+    }
+
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      height: 56px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+      color: var(--color-primary);
+    }
+
+    .logo svg { width: 100%; height: 100%; }
+
+    nav {
+      display: flex;
+      gap: var(--space-5);
+    }
+
+    nav a {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      transition: color 120ms;
+    }
+
+    nav a:hover { color: var(--color-primary); }
+
+    .header-right {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .header-email {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-muted);
+      transition: color 120ms;
+    }
+
+    .header-email:hover { color: var(--color-primary); }
+
+    .header-linkedin {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      transition: color 120ms;
+    }
+
+    .header-linkedin:hover { color: var(--color-primary); }
+
+    /* ─── Hero ────────────────────────────────────── */
+
+    .hero {
+      padding-top: calc(56px + var(--space-10));
+      padding-bottom: var(--space-8);
+    }
+
+    .hero-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+
+    .hero-name {
+      font-size: 88px;
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-4);
+    }
+
+    .hero-meta {
+      margin-top: var(--space-4);
+    }
+
+    .hero-role {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: var(--space-2);
+    }
+
+    .hero-tagline {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--color-muted);
+      line-height: 1.6;
+      max-width: 400px;
+    }
+
+    /* ─── Section ─────────────────────────────────── */
+
+    .section {
+      padding: var(--space-8) 0;
+      border-top: 1px solid var(--color-tertiary);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--space-6);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    /* ─── Experience ──────────────────────────────── */
+
+    .exp-years-total {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-subtle);
+    }
+
+    .experience-list { list-style: none; }
+
+    .experience-item {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr;
+      align-items: center;
+      gap: var(--space-4);
+      padding: 22px 0;
+      border-bottom: 1px solid var(--color-surface);
+      transition: background-color 120ms;
+    }
+
+    .experience-item:first-child {
+      border-top: 1px solid var(--color-surface);
+    }
+
+    .exp-left { display: flex; align-items: center; gap: var(--space-3); }
+
+    .exp-company {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .exp-current {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      padding: 2px 6px;
+      line-height: 1.4;
+    }
+
+    .exp-role {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--color-muted);
+    }
+
+    .exp-dates {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-subtle);
+      text-align: right;
+    }
+
+    /* ─── Clients ─────────────────────────────────── */
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-4);
+      align-items: center;
+    }
+
+    .client-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-3);
+    }
+
+    .client-logo img {
+      width: 100%;
+      max-height: 36px;
+      object-fit: contain;
+      filter: grayscale(100%);
+      opacity: 0.75;
+    }
+
+    /* ─── Awards ──────────────────────────────────── */
+
+    .awards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .award-item {
+      font-size: 17px;
+      font-weight: 600;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--color-surface);
+    }
+
+    .award-item:nth-child(odd) {
+      padding-right: var(--space-6);
+      border-right: 1px solid var(--color-surface);
+    }
+
+    .award-item:nth-child(even) {
+      padding-left: var(--space-6);
+    }
+
+    .award-item:nth-last-child(-n+2) {
+      border-bottom: none;
+    }
+
+    /* ─── Works ───────────────────────────────────── */
+
+    .works-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .work-case {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      padding: var(--space-8) 0;
+      border-bottom: 1px solid var(--color-tertiary);
+    }
+
+    .work-case:first-child {
+      border-top: 1px solid var(--color-tertiary);
+    }
+
+    .work-case:last-child {
+      border-bottom: none;
+    }
+
+    .work-left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .work-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .work-title {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .work-description {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--color-primary);
+      max-width: 640px;
+    }
+
+    .work-right {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* ─── CTA ─────────────────────────────────────── */
+
+    .cta-section {
+      background-color: var(--color-primary);
+      color: var(--color-secondary);
+      padding: var(--space-10) 0;
+      text-align: center;
+    }
+
+    .cta-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-6);
+    }
+
+    .cta-headline {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .cta-email {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: var(--color-secondary);
+      opacity: 0.9;
+      transition: opacity 120ms;
+      border-bottom: 1px solid rgba(250,250,250,0.25);
+      padding-bottom: 2px;
+    }
+
+    .cta-email:hover { opacity: 1; border-color: rgba(250,250,250,0.8); }
+
+    .cta-linkedin {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+      opacity: 0.4;
+      transition: opacity 120ms;
+      margin-top: var(--space-2);
+    }
+
+    .cta-linkedin:hover { opacity: 0.8; }
+
+    /* ─── Footer ──────────────────────────────────── */
+
+    .site-footer {
+      background-color: var(--color-primary);
+      border-top: 1px solid rgba(250,250,250,0.1);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      color: var(--color-secondary);
+      opacity: 0.35;
+    }
+
+    .footer-logo svg { width: 100%; height: 100%; }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-secondary);
+      opacity: 0.25;
+    }
+
+    /* ─── Responsive ──────────────────────────────── */
+
+    @media (max-width: 960px) {
+      :root { --gutter: 32px; }
+
+      .hero-name { font-size: 64px; }
+
+      .work-case {
+        grid-template-columns: 1fr;
+      }
+
+      .work-left { position: static; }
+
+      .clients-grid { grid-template-columns: repeat(4, 1fr); }
+
+      .cta-headline { font-size: 48px; }
+    }
+
+    @media (max-width: 700px) {
+      :root { --gutter: 20px; }
+
+      .header-inner { grid-template-columns: auto 1fr auto; }
+      nav { gap: var(--space-3); justify-content: center; }
+      .header-right { display: none; }
+
+      .hero-inner { grid-template-columns: 1fr; gap: var(--space-4); }
+      .hero-name { font-size: 52px; }
+      .hero-meta { padding-bottom: 0; }
+
+      .experience-item { grid-template-columns: 1fr 1fr; }
+      .exp-dates { grid-column: 1 / -1; text-align: left; }
+
+      .clients-grid { grid-template-columns: repeat(3, 1fr); }
+
+      .awards-grid { grid-template-columns: 1fr; }
+      .award-item:nth-child(odd) { padding-right: 0; border-right: none; }
+      .award-item:nth-child(even) { padding-left: 0; }
+      .award-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--color-surface); }
+      .award-item:last-child { border-bottom: none; }
+
+      .cta-headline { font-size: 36px; }
+      .cta-email { font-size: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── Header ──────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+
+      <div class="logo" aria-label="Tsytkin">
+        <svg viewBox="0 0 636.36 635.5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M636.36,274.75V.03s-90.91-.03-90.91-.03v207.39c37.06,10.78,69.6,34.6,90.91,67.37Z"/>
+          <path d="M545.46,518.35v26.24s90.91-.25,90.91-.25v-92.4c-20.11,30.83-51.18,55.03-90.91,66.41Z"/>
+          <path d="M454.54,596.18v-77.2c-44.22-12.54-80.76-43.58-100.51-84.46h-81.31v23.12c29.11,71.29,91.04,125.25,166.67,143.81,4.91-1.98,9.97-3.74,15.14-5.27Z"/>
+          <polygon points="454.5 544.59 454.54 635.5 363.64 635.5 363.64 544.59 454.5 544.59"/>
+          <path d="M488.03,308.28c31.7-7.09,60.54,13,66.99,41.89,6.89,30.86-12.13,60.64-42.5,67.57-29.55,6.74-59.38-11.47-66.78-40.91-7.52-29.9,9.75-61.27,42.29-68.54Z"/>
+          <polygon points="90.91 544.34 0 544.59 0 0 90.91 .03 90.91 544.34"/>
+          <polygon points=".6 544.59 .43 453.69 363.64 453.68 363.62 544.59 .6 544.59"/>
+          <polygon points="363.64 544.34 272.73 544.59 272.73 0 363.63 .03 363.64 544.34"/>
+        </svg>
+      </div>
+
+      <nav>
+        <a href="#experience">Experience</a>
+        <a href="#awards">Awards</a>
+        <a href="#works">Works</a>
+      </nav>
+
+      <div class="header-right">
+        <a href="mailto:kirill.tsytkin@gmail.com" class="header-email">kirill.tsytkin@gmail.com</a>
+        <a href="https://www.linkedin.com/in/kirilltsytkin/" target="_blank" rel="noopener" class="header-linkedin">LinkedIn</a>
+      </div>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ─── Hero ─────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-inner">
+        <h1 class="hero-name">Kirill<br>Tsytkin</h1>
+        <div class="hero-meta">
+          <p class="hero-role">Creative Director</p>
+          <p class="hero-tagline">Fighting entropy through meaningful communication.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Experience ───────────────────────────── -->
+    <section class="section" id="experience">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Experience</span>
+          <span class="exp-years-total">15+ years in the industry</span>
+        </div>
+        <ul class="experience-list">
+          <li class="experience-item">
+            <div class="exp-left">
+              <span class="exp-company">Independent</span>
+            </div>
+            <span class="exp-role">Creative Director</span>
+            <span class="exp-dates">Apr 2021 — Present</span>
+          </li>
+          <li class="experience-item">
+            <div class="exp-left">
+              <span class="exp-company">Cheil</span>
+            </div>
+            <span class="exp-role">Creative Lead</span>
+            <span class="exp-dates">Mar 2017 — Apr 2020</span>
+          </li>
+          <li class="experience-item">
+            <div class="exp-left">
+              <span class="exp-company">BBDO</span>
+            </div>
+            <span class="exp-role">Copywriter</span>
+            <span class="exp-dates">Apr 2014 — Mar 2017</span>
+          </li>
+          <li class="experience-item">
+            <div class="exp-left">
+              <span class="exp-company">Publicis</span>
+            </div>
+            <span class="exp-role">Copywriter</span>
+            <span class="exp-dates">Sep 2012 — Mar 2014</span>
+          </li>
+          <li class="experience-item">
+            <div class="exp-left">
+              <span class="exp-company">Young &amp; Rubicam</span>
+            </div>
+            <span class="exp-role">Creative Digital Supervisor</span>
+            <span class="exp-dates">Mar 2010 — Aug 2012</span>
+          </li>
+          <li class="experience-item">
+            <div class="exp-left">
+              <span class="exp-company">BBDO</span>
+            </div>
+            <span class="exp-role">Copywriter</span>
+            <span class="exp-dates">May 2009 — Mar 2010</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── Clients ──────────────────────────────── -->
+    <section class="section" id="clients">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Clients</span>
+        </div>
+        <div class="clients-grid">
+          <div class="client-logo"><img src="images/clients/upload-b843f312-217f-4df4-a002-618655eeeedf.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-b78aa1fb-8d7a-4aee-800d-903c7920e00f.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-b9dae002-7fbe-4c58-bc2a-3459ef15e0cc.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-2b789622-870f-42ab-9097-f509a82881bc.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-7c8afd62-a09a-4e3a-8574-bc58f7420e19.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-abc1de3e-060a-4c46-9a64-bd8bc7c5968b.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-4214a6db-c52b-464d-8662-5bfa6fcb6911.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-4774e5ef-0c40-43ef-895b-a285caa87839.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-af2d8e52-90ca-4f75-9f7b-18a7ed32b942.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-270a2127-22d9-49d4-bc0a-957e438dc3d3.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-2d77f82f-2dab-483f-b3f3-4c5359e46080.png" alt="Client"></div>
+          <div class="client-logo"><img src="images/clients/upload-446bff96-d43f-4b9c-943b-638250e82c9f.png" alt="Client"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Awards ───────────────────────────────── -->
+    <section class="section" id="awards">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Awards</span>
+        </div>
+        <div class="awards-grid">
+          <div class="award-item">Epica</div>
+          <div class="award-item">Effie Europe</div>
+          <div class="award-item">ADC*E</div>
+          <div class="award-item">The Globes</div>
+          <div class="award-item">Young Guns</div>
+          <div class="award-item">Effie</div>
+          <div class="award-item">White Square</div>
+          <div class="award-item">Ad Black Sea</div>
+          <div class="award-item">ADCR</div>
+          <div class="award-item">Red Apple</div>
+          <div class="award-item">Tagline</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Works ────────────────────────────────── -->
+    <section class="section" id="works">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Selected Work</span>
+        </div>
+        <div class="works-list">
+
+          <article class="work-case">
+            <div class="work-left">
+              <p class="work-meta">Snickers</p>
+              <h2 class="work-title">Shazam Your Hunger</h2>
+              <p class="work-description">
+                Snickers replaced its logo on pack with words like "slow", "weird" or&nbsp;"gloomy" — hunger symptoms only Snickers can fix. To launch the campaign, we teamed up with music band Hleb and produced 5&nbsp;versions of the same music video — each one embodying a&nbsp;different symptom. The catch: to unlock a&nbsp;video, you had to find the matching Snickers bar and Shazam it. All 5&nbsp;versions could then be watched simultaneously on a&nbsp;dedicated landing page, synced frame by&nbsp;frame.
+              </p>
+            </div>
+            <div class="work-right">
+              <div class="video-wrap">
+                <iframe src="https://player.vimeo.com/video/338477345?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </article>
+
+          <article class="work-case">
+            <div class="work-left">
+              <p class="work-meta">Samsung</p>
+              <h2 class="work-title">10&nbsp;Years of Confidence</h2>
+              <p class="work-description">
+                Samsung offers a&nbsp;10-year warranty on its washing machines. The brief was a&nbsp;reliability testimonial. We made something more human instead. Three films. Three people at&nbsp;different stages of life — growing up, starting over, moving on. Each with one constant in&nbsp;the background: the same Samsung washing machine, still going strong.
+              </p>
+            </div>
+            <div class="work-right">
+              <div class="video-wrap">
+                <iframe src="https://player.vimeo.com/video/338468639?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="video-wrap">
+                <iframe src="https://player.vimeo.com/video/338468625?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              </div>
+              <div class="video-wrap">
+                <iframe src="https://player.vimeo.com/video/338468610?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </article>
+
+          <article class="work-case">
+            <div class="work-left">
+              <p class="work-meta">Samsung</p>
+              <h2 class="work-title">Everything for Magic Moments</h2>
+              <p class="work-description">
+                Everyone shops for gadgets during the holidays. But gadgets aren't really what people want to give. So Samsung did something unexpected: it closed all 200 of its stores and reopened them as "Everything for Magic Moments" — filled not with specs, but with ideas for gifts that make people cry, laugh and hug each other a&nbsp;little tighter.
+              </p>
+            </div>
+            <div class="work-right">
+              <div class="video-wrap">
+                <iframe src="https://player.vimeo.com/video/338464946?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </article>
+
+          <article class="work-case">
+            <div class="work-left">
+              <p class="work-meta">Allur</p>
+              <h2 class="work-title">Allur — New Identity</h2>
+              <p class="work-description">
+                Allur is Kazakhstan's largest automotive company — assembling cars, running dealerships, delivering vehicles straight to customers' doors. Growing fast, invisible as a&nbsp;brand. We spent months inside the business — interviews with senior management, focus groups, field trips across the country — before landing on a&nbsp;single idea: Allur doesn't just sell cars, it owns the entire journey of mobility in&nbsp;Kazakhstan. The new identity was built around that ambition. A&nbsp;logo inspired by continuous movement. A&nbsp;visual system rooted in national ornament. One flexible framework that holds together a&nbsp;growing ecosystem of services and sub-brands.
+              </p>
+            </div>
+            <div class="work-right">
+              <div class="video-wrap">
+                <iframe src="https://player.vimeo.com/video/706460199?title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── CTA ──────────────────────────────────── -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2 class="cta-headline">Let's work together.</h2>
+      <div class="cta-links">
+        <a href="mailto:kirill.tsytkin@gmail.com" class="cta-email">kirill.tsytkin@gmail.com</a>
+        <a href="https://www.linkedin.com/in/kirilltsytkin/" target="_blank" rel="noopener" class="cta-linkedin">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ───────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo" aria-label="Tsytkin">
+        <svg viewBox="0 0 636.36 635.5" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M636.36,274.75V.03s-90.91-.03-90.91-.03v207.39c37.06,10.78,69.6,34.6,90.91,67.37Z"/>
+          <path d="M545.46,518.35v26.24s90.91-.25,90.91-.25v-92.4c-20.11,30.83-51.18,55.03-90.91,66.41Z"/>
+          <path d="M454.54,596.18v-77.2c-44.22-12.54-80.76-43.58-100.51-84.46h-81.31v23.12c29.11,71.29,91.04,125.25,166.67,143.81,4.91-1.98,9.97-3.74,15.14-5.27Z"/>
+          <polygon points="454.5 544.59 454.54 635.5 363.64 635.5 363.64 544.59 454.5 544.59"/>
+          <path d="M488.03,308.28c31.7-7.09,60.54,13,66.99,41.89,6.89,30.86-12.13,60.64-42.5,67.57-29.55,6.74-59.38-11.47-66.78-40.91-7.52-29.9,9.75-61.27,42.29-68.54Z"/>
+          <polygon points="90.91 544.34 0 544.59 0 0 90.91 .03 90.91 544.34"/>
+          <polygon points=".6 544.59 .43 453.69 363.64 453.68 363.62 544.59 .6 544.59"/>
+          <polygon points="363.64 544.34 272.73 544.59 272.73 0 363.63 .03 363.64 544.34"/>
+        </svg>
+      </div>
+      <span class="footer-copy">© Kirill Tsytkin</span>
+    </div>
+  </footer>
+
+</body>
+</html>
