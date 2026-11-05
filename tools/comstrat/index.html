@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comstrat — a Claude Code skill for communication strategy</title>
+<meta name="description" content="comstrat, a Claude Code skill for communication strategy, presented by its own method. This page was built by comstrat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFFFFF;
+  --surface: #F5F5F5;
+  --border: #E5E5E5;
+  --text-1: #0A0A0A;
+  --text-2: #6B6B6B;
+  --text-3: #A3A3A3;
+  --ok: #16A34A;
+  --no: #DC2626;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --pad: clamp(16px, 4vw, 48px);
+  --max: 1120px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A0A0A; --surface: #1A1A1A; --border: #2A2A2A;
+    --text-1: #FAFAFA; --text-2: #A3A3A3; --text-3: #6B6B6B;
+    --ok: #22C55E; --no: #EF4444;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A0A0A; --surface: #1A1A1A; --border: #2A2A2A;
+  --text-1: #FAFAFA; --text-2: #A3A3A3; --text-3: #6B6B6B;
+  --ok: #22C55E; --no: #EF4444;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 64px; }
+body { background: var(--bg); color: var(--text-1); font-family: var(--font); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { color: var(--text-2); }
+code, .mono { font-family: var(--mono); font-size: 0.875em; }
+p code, li code, td code { background: var(--surface); padding: 1px 6px; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--pad); }
+.measure { max-width: 65ch; }
+
+/* Top bar */
+.bar { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--border); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 56px; }
+.bar__name { font-weight: 600; letter-spacing: -0.01em; }
+.bar__name a { text-decoration: none; color: var(--text-2); font-weight: 500; }
+.bar__name a:hover { color: var(--text-1); }
+.bar__sep { color: var(--text-3); font-weight: 400; margin: 0 4px; }
+.bar nav { display: flex; gap: 20px; font-size: 14px; color: var(--text-2); }
+.bar nav a { text-decoration: none; white-space: nowrap; }
+.bar nav a:hover { color: var(--text-1); }
+.bar__gh { font-size: 14px; font-weight: 500; text-decoration: none; border: 1px solid var(--text-1); padding: 6px 14px; white-space: nowrap; }
+.bar__gh:hover { background: var(--text-1); color: var(--bg); }
+@media (max-width: 860px) { .bar nav { display: none; } }
+
+/* Hero */
+.hero { padding: clamp(56px, 10vw, 120px) 0 clamp(48px, 8vw, 96px); border-bottom: 1px solid var(--border); }
+.title { font-size: clamp(3rem, 9vw, 7rem); line-height: 1; letter-spacing: -0.035em; font-weight: 600; }
+.subtitle { margin-top: 16px; font-size: clamp(1.375rem, 3vw, 2.25rem); line-height: 1.2; letter-spacing: -0.015em; color: var(--text-2); }
+.hero__note { margin-top: 40px; font-size: 0.875rem; letter-spacing: 0.01em; color: var(--text-2); font-family: var(--mono); }
+
+/* Sections */
+.section { padding: clamp(56px, 9vw, 112px) 0 0; }
+.divider { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 20px; padding-bottom: 20px; border-bottom: 2px solid var(--text-1); }
+.divider__num { font-family: var(--mono); font-size: 14px; color: var(--text-3); }
+.divider h2 { font-size: clamp(1.75rem, 3.6vw, 2.25rem); line-height: 1.15; letter-spacing: -0.015em; font-weight: 600; }
+
+.block { display: grid; grid-template-columns: 220px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--border); }
+.block:last-child { border-bottom: 0; }
+.block > * { min-width: 0; }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); padding-top: 6px; }
+@media (max-width: 760px) { .block { grid-template-columns: 1fr; gap: 14px; padding: 32px 0; } .label { padding-top: 0; } }
+
+.lead { font-size: clamp(1.25rem, 2.2vw, 1.5rem); line-height: 1.4; letter-spacing: -0.01em; }
+.lead strong { font-weight: 600; }
+.statement { font-size: clamp(1.375rem, 2.6vw, 1.875rem); line-height: 1.3; letter-spacing: -0.015em; font-weight: 500; max-width: 34ch; }
+.statement b { font-weight: 600; }
+
+/* Why / How / What */
+.points { display: grid; grid-template-columns: 88px 1fr; }
+.points dt, .points dd { padding: 16px 0; border-top: 1px solid var(--border); }
+.points dt:first-of-type, .points dd:first-of-type { border-top: 0; padding-top: 0; }
+.points dt { font-weight: 600; }
+.points dd { font-size: 1.125rem; line-height: 1.5; max-width: 60ch; }
+
+/* Archetypes */
+.arch { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.arch__card { background: var(--bg); padding: 28px; }
+.arch__role { font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); }
+.arch__name { margin-top: 8px; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
+.arch__card dl { margin-top: 16px; display: grid; grid-template-columns: 72px 1fr; gap: 6px 12px; font-size: 15px; }
+.arch__card dt { color: var(--text-2); }
+.arch__line { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 1.125rem; font-style: italic; }
+.arch__risks { grid-column: 1 / -1; background: var(--surface); padding: 20px 28px; font-size: 15px; }
+.arch__risks strong { font-weight: 600; }
+.arch p.body { margin-top: 12px; font-size: 15px; color: var(--text-2); }
+@media (max-width: 760px) { .arch { grid-template-columns: 1fr; } .arch__card, .arch__risks { padding: 22px 20px; } }
+
+/* Audience prose */
+.prose p { font-size: 1.125rem; line-height: 1.55; }
+.prose p + p { margin-top: 16px; }
+.prose b { font-weight: 600; }
+
+/* Ladder: read from top to bottom, an arrow between steps */
+.ladder { list-style: none; max-width: 640px; }
+.ladder li { position: relative; border: 1px solid var(--border); padding: 18px 22px; }
+.ladder li + li { margin-top: 44px; }
+.ladder li + li::before { content: ""; position: absolute; left: 50%; top: -38px; width: 1px; height: 30px; background: var(--text-1); }
+.ladder li + li::after { content: ""; position: absolute; left: calc(50% - 5px); top: -14px; border: 5px solid transparent; border-top: 7px solid var(--text-1); border-bottom: 0; }
+.ladder__step { display: block; }
+.ladder__n { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+.ladder__k { font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); margin-left: 8px; }
+.ladder__t { display: block; margin-top: 6px; font-size: 1.0625rem; line-height: 1.45; }
+.ladder__t em { font-style: normal; font-family: var(--mono); font-size: 0.8125rem; color: var(--text-2); margin-right: 4px; }
+.ladder li:last-child { border-color: var(--text-1); }
+.ladder li:last-child .ladder__t { font-weight: 600; }
+
+/* Lists */
+.rules { list-style: none; }
+.rules li { padding: 14px 0; border-top: 1px solid var(--border); display: grid; grid-template-columns: 240px 1fr; gap: 20px; }
+.rules li:first-child { border-top: 0; padding-top: 0; }
+.rules b { font-weight: 600; }
+@media (max-width: 760px) { .rules li { grid-template-columns: 1fr; gap: 4px; } }
+.pair { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-size: 15px; }
+.pair .ok::before { content: "✔ "; color: var(--ok); }
+.pair .no::before { content: "✖ "; color: var(--no); }
+.pair .no { color: var(--text-2); }
+
+/* Brief */
+.gtb { display: grid; grid-template-columns: 72px 1fr; }
+.gtb dt, .gtb dd { padding: 18px 0; border-top: 1px solid var(--border); }
+.gtb dt:first-of-type, .gtb dd:first-of-type { border-top: 0; padding-top: 0; }
+.gtb dt { font-weight: 600; font-size: 1.125rem; }
+.gtb dd { font-size: 1.125rem; line-height: 1.5; max-width: 62ch; }
+.gtb q { display: block; margin-top: 10px; font-style: italic; quotes: "“" "”"; }
+.messages { list-style: none; counter-reset: m; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.messages li { counter-increment: m; background: var(--bg); padding: 22px 24px; font-size: 1.125rem; font-weight: 500; letter-spacing: -0.005em; }
+.messages li::before { content: "0" counter(m); display: block; font-family: var(--mono); font-size: 12px; color: var(--text-3); margin-bottom: 6px; font-weight: 400; }
+@media (max-width: 760px) { .messages { grid-template-columns: 1fr; } }
+
+pre { margin-top: 16px; background: var(--surface); padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.6; }
+.triggers { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.triggers li { border: 1px solid var(--border); border-radius: 9999px; padding: 4px 14px; font-size: 14px; }
+
+.files { list-style: none; }
+.files li { display: grid; grid-template-columns: 300px 1fr; gap: 20px; padding: 12px 0; border-top: 1px solid var(--border); font-size: 15px; }
+.files li:first-child { border-top: 0; padding-top: 0; }
+.files a { font-family: var(--mono); font-size: 14px; }
+@media (max-width: 760px) { .files li { grid-template-columns: 1fr; gap: 2px; } }
+
+.sources { list-style: none; }
+.sources li { padding: 10px 0; border-top: 1px solid var(--border); }
+.sources li:first-child { border-top: 0; padding-top: 0; }
+
+footer { margin-top: clamp(64px, 10vw, 120px); border-top: 1px solid var(--border); padding: 28px 0 40px; font-size: 14px; color: var(--text-2); }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <span class="bar__name"><a href="/tools/">Tools</a> <span class="bar__sep">/</span> comstrat</span>
+    <nav aria-label="Sections">
+      <a href="#brand">About the brand</a>
+      <a href="#product">About the product</a>
+      <a href="#brief">The brief</a>
+      <a href="#useful">Useful for the brief</a>
+    </nav>
+    <a class="bar__gh" href="https://github.com/airb0/comstrat">GitHub</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <h1 class="title">Comstrat</h1>
+      <p class="subtitle">a Claude Code skill for communication strategy</p>
+      <p class="hero__note measure">This page was created using comstrat, so you can see how it works right here.</p>
+    </div>
+  </section>
+
+  <!-- 01 About the brand -->
+  <section class="section" id="brand">
+    <div class="wrap">
+      <div class="divider"><span class="divider__num">01</span><h2>About the brand</h2></div>
+
+      <div class="block">
+        <div class="label">About the brand: me</div>
+        <p class="lead measure"><strong>I'm</strong> a creative director. I spent fifteen years in international advertising agencies, mostly on the receiving end of the creative brief.</p>
+      </div>
+
+      <div class="block">
+        <div class="label">Brand Value Proposition</div>
+        <p class="statement"><b>I believe</b> an idea is only as strong as the truth about people it rests on. <b>That's why</b> I look for the tension in people's lives and make it clear to everyone who works on the job. <b>I do it with</b> ideas, campaigns and activations — and with the briefs and platforms behind them.</p>
+      </div>
+
+      <div class="block">
+        <div class="label">Brand CVP: Why, How, What</div>
+        <dl class="points">
+          <dt>Why</dt><dd>I believe an idea is only as strong as the truth about people it rests on.</dd>
+          <dt>How</dt><dd>I stand on the side of the people who have to make the work, and give them a task they can start from.</dd>
+          <dt>What</dt><dd>I make ideas, campaigns and activations, and write the briefs and platforms the way I would want to receive them.</dd>
+        </dl>
+      </div>
+
+      <div class="block">
+        <div class="label">Brand archetype</div>
+        <div class="arch">
+          <div class="arch__card">
+            <div class="arch__role">Leading</div>
+            <div class="arch__name">Creator</div>
+            <dl><dt>Desire</dt><dd>Make something of lasting value</dd><dt>Fear</dt><dd>Mediocrity</dd></dl>
+            <p class="body">A creative director's job is to make things that last longer than the media plan.</p>
+            <p class="arch__line">Make the task worth the work.</p>
+          </div>
+          <div class="arch__card">
+            <div class="arch__role">Complementary</div>
+            <div class="arch__name">Regular Guy</div>
+            <dl><dt>Desire</dt><dd>Connection, belonging</dd><dt>Fear</dt><dd>Standing out, being rejected</dd></dl>
+            <p class="body">It cancels both risks: the method is shared openly, in plain words, for colleagues rather than for show.</p>
+            <p class="arch__line">Written by someone who has been on the other side of the brief.</p>
+          </div>
+          <div class="arch__risks"><strong>Risks for this brand.</strong> Self-indulgence: the method turns into one person's taste. Perfectionism: a tool so elaborate nobody uses it.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 About the product -->
+  <section class="section" id="product">
+    <div class="wrap">
+      <div class="divider"><span class="divider__num">02</span><h2>About the product</h2></div>
+
+      <div class="block">
+        <div class="label">The news</div>
+        <p class="lead measure">I created <strong>comstrat</strong>, a Claude Code skill for communication strategy. It is now available publicly under the MIT licence.</p>
+      </div>
+
+      <div class="block">
+        <div class="label">Product CVP</div>
+        <p class="statement"><b>Every creative team deserves</b> a brief it can start thinking from. <b>That's why</b> comstrat turns a pile of client inputs into a readable task: a Get-To-By brief with a real insight, a brand platform and a message system. <b>It does it with</b> seven rule files — the method I would want behind every brief I receive.</p>
+      </div>
+
+      <div class="block">
+        <div class="label">Product CVP: Why, How, What</div>
+        <dl class="points">
+          <dt>Why</dt><dd>comstrat exists so that every creative team starts from a truth about people, not from a pile of inputs.</dd>
+          <dt>How</dt><dd>It takes the creative pair's side and makes an unclear task readable.</dd>
+          <dt>What</dt><dd>It builds the Get-To-By brief, the insight, the CVP on Why-How-What, the message ladder, the archetype pair, principles and tone — and asks before it invents.</dd>
+        </dl>
+      </div>
+
+      <div class="block">
+        <div class="label">Product CVP by audience</div>
+        <div class="prose measure">
+          <p>For <b>strategists</b>, comstrat brings confidence that the platform holds: the ladder checks the circle, and a break report names the failing step, so the platform survives the creative stage.</p>
+          <p><b>Creative pairs</b> get a task they can start from on day one — a Get-To-By brief with an “I want X, but Y” insight and a list of open questions — so their hours go into ideas, not into decoding.</p>
+          <p><b>Solo creators and small studios</b> get a strategist's discipline without a strategy department: the full platform in presentation order, ready for a deck, so small clients get the same quality of thinking.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="label">Message ladder</div>
+        <div>
+          <ol class="ladder">
+            <li><span class="ladder__step"><span class="ladder__n">1</span><span class="ladder__k">What we do</span><span class="ladder__t">comstrat reads the client's inputs, asks the missing questions and writes briefs, propositions and ladders by fixed rules.</span></span></li>
+            <li><span class="ladder__step"><span class="ladder__n">2</span><span class="ladder__k">What we create</span><span class="ladder__t"><em>so that</em> there is one task and one brand meaning everyone on the job reads the same way.</span></span></li>
+            <li><span class="ladder__step"><span class="ladder__n">3</span><span class="ladder__k">For the person</span><span class="ladder__t"><em>so that</em> the creative pair knows what to make before they start.</span></span></li>
+            <li><span class="ladder__step"><span class="ladder__n">4</span><span class="ladder__k">For the person, sharper</span><span class="ladder__t"><em>so that</em> the team spends its hours on ideas, not on decoding the brief.</span></span></li>
+            <li><span class="ladder__step"><span class="ladder__n">5</span><span class="ladder__k">For the system</span><span class="ladder__t"><em>so that</em> the work that reaches people rests on a real truth about them.</span></span></li>
+            <li><span class="ladder__step"><span class="ladder__n">6</span><span class="ladder__k">For people</span><span class="ladder__t"><em>so that</em> people get communication that means something to them.</span></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="label">Principles</div>
+        <ul class="rules">
+          <li><b>Ask before inventing</b><span>When the inputs are thin, list the questions and wait; don't fill holes with plausible guesses.</span></li>
+          <li><b>Every sentence carries meaning</b><span>Use the client's own words wherever they fit, but no sentence is there just to fill space.</span></li>
+          <li><b>One audience, one shift</b><span>A brief that wants everything gets nothing.</span></li>
+          <li><b>Test what you write</b><span>Every tool ends with its checks.</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <div class="label">Tone of voice</div>
+        <ul class="rules">
+          <li><b>Short</b><span>Say it in as few words as it takes.<span class="pair"><span class="ok">No tension, no insight.</span><span class="no">An insight should ideally contain some form of tension between a desire and a barrier.</span></span></span></li>
+          <li><b>Plain</b><span>The words the reader already uses, including the client's own; no jargon to sound expert.</span></li>
+          <li><b>To the point</b><span>Every line tells the reader something they can use.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 The brief -->
+  <section class="section" id="brief">
+    <div class="wrap">
+      <div class="divider"><span class="divider__num">03</span><h2>Here's how a brief for communicating this skill could look</h2></div>
+
+      <div class="block">
+        <div class="label">Brief: Get-To-By</div>
+        <dl class="gtb">
+          <dt>Get</dt><dd>creative teams and strategists who receive briefs<q>I want to start making the work, but what I got is a pile of inputs that doesn't say what the task is.</q></dd>
+          <dt>To</dt><dd>move from “the brief is whatever the client sends” to “I can turn any inputs into a brief I can start from.”</dd>
+          <dt>By</dt><dd>a Claude Code skill that reads the inputs, asks what is missing and returns a Get-To-By brief and a platform, with the gaps listed.</dd>
+        </dl>
+      </div>
+
+      <div class="block">
+        <div class="label">Key messages</div>
+        <ol class="messages">
+          <li>Drop in the client's inputs, get a task you can start from.</li>
+          <li>No tension, no insight.</li>
+          <li>The ladder checks the circle.</li>
+          <li>It asks before it invents.</li>
+        </ol>
+      </div>
+
+      <div class="block" id="install">
+        <div class="label">How to install and use</div>
+        <div class="measure">
+          <p>Copy the folder into your project's <code>.claude/skills/comstrat/</code>, or into <code>~/.claude/skills/comstrat/</code> to use it in every project.</p>
+          <pre>git clone https://github.com/airb0/comstrat.git ~/.claude/skills/comstrat</pre>
+          <p style="margin-top:20px">Then ask Claude Code in your own words:</p>
+          <ul class="triggers">
+            <li>make a brief from these inputs</li>
+            <li>Get-To-By</li>
+            <li>write the value proposition</li>
+            <li>build the message ladder</li>
+            <li>pick the brand archetype</li>
+            <li>check our platform for holes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Useful for the brief -->
+  <section class="section" id="useful">
+    <div class="wrap">
+      <div class="divider"><span class="divider__num">04</span><h2>Useful for the brief</h2></div>
+
+      <div class="block">
+        <div class="label">Useful for the brief: the rule files</div>
+        <ul class="files">
+          <li><a href="https://github.com/airb0/comstrat/blob/main/SKILL.md">SKILL.md</a><span>Where the skill sits, the tools, how to work, the non-negotiables.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/brief-get-to-by.md">rules/brief-get-to-by.md</a><span>The Get-To-By brief: Get, To, By, what goes around them, open questions.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/insight.md">rules/insight.md</a><span>“I want X, but Y”: where the tension comes from and five tests.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/value-proposition.md">rules/value-proposition.md</a><span>Brand and product CVP on Why-How-What, the “We believe…” statement, per-audience lines, vision and mission.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/message-ladder.md">rules/message-ladder.md</a><span>The “so that” chain, the proofs box, audience entry points, break checks.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/archetypes.md">rules/archetypes.md</a><span>The twelve archetypes, leading + complementary, risks.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/principles-tone-visual.md">rules/principles-tone-visual.md</a><span>Principles, tone ✔/✖ pairs, one visual principle.</span></li>
+          <li><a href="https://github.com/airb0/comstrat/blob/main/rules/platform-structure.md">rules/platform-structure.md</a><span>Working order and presentation order.</span></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <div class="label">Useful for the brief: sources</div>
+        <ul class="sources">
+          <li>Simon Sinek, <i>Start With Why</i> (2009), and his TED talk on the Golden Circle.</li>
+          <li>Margaret Mark and Carol S. Pearson, <i>The Hero and the Outlaw</i> (2001).</li>
+          <li>Get-To-By — a brief format widely used in agencies.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>comstrat · MIT licence</span>
+    <a href="https://github.com/airb0/comstrat">github.com/airb0/comstrat</a>
+  </div>
+</footer>
+
+</body>
+</html>
