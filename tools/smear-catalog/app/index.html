@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smear Catalog</title>
+<style>
+  :root { --bg: #161616; --panel: #1f1f1f; --line: #333; --text: #eee; --muted: #8a8a8a; --accent: #c1f11d; --paper: #f3f1ea; }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.4 -apple-system, system-ui, sans-serif; }
+  button, select, input[type=text] { background: #2b2b2b; color: var(--text); border: 1px solid #444; border-radius: 4px; padding: 4px 8px; font: inherit; }
+  button { cursor: pointer; }
+  button.on { background: var(--accent); color: #000; border-color: var(--accent); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgba(22, 22, 22, 0.96); border-bottom: 1px solid var(--line); }
+  .wrap { position: relative; max-width: 1600px; margin: 0 auto; display: flex; align-items: center; gap: 12px; padding: 10px 16px; }
+  h1 { font-size: 14px; margin: 0; white-space: nowrap; }
+  .seg { display: flex; gap: 4px; }
+  .seg button { padding: 3px 5px; line-height: 0; }
+  .seg svg { width: 40px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .seg svg .ground { stroke-width: 2.5; opacity: 0.55; }
+  .seg svg .thin { stroke-width: 1.2; opacity: 0.55; }
+  #playBtn { width: 32px; padding: 4px 0; }
+  #trajSelect { display: none; min-width: 0; }
+  .speed { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .speed input { width: 150px; }
+  .speed output { min-width: 50px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #gearBtn { font-size: 15px; line-height: 1; padding: 5px 8px; }
+  #menu { position: absolute; right: 16px; top: calc(100% + 4px); width: min(320px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); display: none; }
+  #menu.open { display: block; }
+  #menu h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 12px 0 6px; font-weight: 600; }
+  #menu h3:first-child { margin-top: 0; }
+  .row { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  label.chk { display: flex; gap: 6px; align-items: center; cursor: pointer; margin-top: 12px; }
+  .rng { display: grid; grid-template-columns: 1fr 52px; gap: 2px 6px; align-items: center; margin: 6px 0; }
+  .rng span { grid-column: 1 / -1; color: #ccc; }
+  .rng output { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr)); gap: 16px; padding: 16px; max-width: 1600px; margin: 0 auto; }
+  .tile .view { display: block; width: 100%; background: none; border: 0; padding: 0; cursor: pointer; }
+  .tile canvas, #stage, .cell canvas { width: 100%; aspect-ratio: 16 / 9; display: block; background: var(--paper); border-radius: 4px; }
+  .tile .view:hover canvas, .tile .view:focus-visible canvas { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+  .tfoot span { font-weight: 600; font-size: 14px; }
+
+  #detail { max-width: 1600px; margin: 0 auto; padding: 16px; }
+  .dhead { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .dhead h2 { font-size: 18px; margin: 0; }
+  .dbody { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+  .transport { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 10px 0 4px; }
+  #status { color: var(--muted); font-variant-numeric: tabular-nums; margin-left: 4px; }
+  .note { color: var(--muted); margin: 6px 0 0; max-width: 70ch; }
+  #board { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 8px; }
+  .cell { cursor: pointer; }
+  .cell canvas { border-radius: 3px; }
+  .cell.cur canvas { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .cell div { color: var(--muted); font-size: 11px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .cell.peak div { color: #ff6b6b; }
+  h3.sec { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 18px 0 2px; font-weight: 600; }
+  #params { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 14px 14px; position: sticky; top: 70px; max-height: calc(100vh - 86px); overflow: auto; }
+  #params details { border-top: 1px solid var(--line); padding: 8px 0 4px; }
+  #params details:first-of-type { border-top: 0; }
+  #params summary { cursor: pointer; font-weight: 600; padding: 2px 0; }
+  .opt { margin: 6px 0; }
+  .opt span { display: block; color: #ccc; margin-bottom: 3px; }
+  #reset { margin-top: 12px; }
+  main.drag { outline: 3px dashed var(--accent); outline-offset: -3px; }
+
+  @media (max-width: 900px) {
+    .dbody { grid-template-columns: 1fr; }
+    #params { position: static; max-height: none; }
+  }
+  @media (max-width: 760px) {
+    h1 { display: none; }
+    .seg { display: none; }
+    #trajSelect { display: block; flex: 1; }
+    .speed { margin-left: 0; }
+    .speed input { width: 96px; }
+    .speed output { min-width: 44px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Smear catalog</h1>
+    <div class="seg" id="trajButtons"></div>
+    <select id="trajSelect" aria-label="Trajectory"></select>
+    <div class="speed">
+      <button id="playBtn" aria-label="Pause">⏸</button>
+      <input id="speed" type="range" min="0" max="5" step="1" value="2" aria-label="Speed">
+      <output id="speedOut"></output>
+    </div>
+    <button id="gearBtn" aria-label="Settings" aria-expanded="false">⚙</button>
+    <div id="menu">
+      <h3>Object</h3>
+      <div class="row" id="objects">
+        <button data-obj="ball">Ball</button>
+        <button data-obj="bw">Black circle</button>
+        <button data-obj="text">Text</button>
+        <button data-obj="icon">Icon</button>
+        <button data-obj="file">Your file…</button>
+      </div>
+      <div class="row" style="margin-top:6px"><input type="text" id="word" value="Hola" style="width:100%" aria-label="Text object"></div>
+      <input type="file" id="file" accept="image/*" hidden>
+      <h3>Drawings</h3>
+      <div class="rng"><span>Animate on Ns (30 fps: 3 = 10 drawings a second)</span><input id="step" type="range" min="1" max="15" step="1" value="3"><output id="stepOut"></output></div>
+      <label class="chk"><input type="checkbox" id="ss" checked> Stretch with speed, squash on impact</label>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div id="grid"></div>
+  <section id="detail" hidden>
+    <div class="dhead"><button id="back">← All effects</button><h2 id="dTitle"></h2></div>
+    <div class="dbody">
+      <div>
+        <canvas id="stage"></canvas>
+        <div class="transport">
+          <button id="pause">Pause</button>
+          <span class="row" id="rates">
+            <button data-rate="1" class="on">1×</button>
+            <button data-rate="0.5">0.5×</button>
+            <button data-rate="0.25">0.25×</button>
+            <button data-rate="0.1">0.1×</button>
+          </span>
+          <button id="prev" aria-label="Previous frame">◀ f</button>
+          <button id="next" aria-label="Next frame">f ▶</button>
+          <span id="status"></span>
+        </div>
+        <div class="note" id="dNote"></div>
+        <h3 class="sec">Storyboard — every drawing of one cycle</h3>
+        <div id="board"></div>
+      </div>
+      <aside id="params"></aside>
+    </div>
+  </section>
+</main>
+
+<script src="core.js"></script>
+<script src="smear.js"></script>
+<script src="smear-effects.js"></script>
+<script>
+const { E: EASE, lerp, clamp01 } = MotionCore;
+const { makeSprite, imageSprite, held, squashStretch, EFFECTS, UNITS } = MotionSmear;
+const W = 1600, H = 900, FPS = 30, PAPER = '#f3f1ea', INK = '#111';
+const $ = (id) => document.getElementById(id);
+
+// The seven effects of the catalogue, in its order and under its names (library labels stay as they are).
+const CATALOG = [
+  ['stretched', 'Squash and Stretch'],
+  ['elongated', 'Elongate'],
+  ['blur', 'Motion blur'],
+  ['smudge', 'Smudged blurs'],
+  ['jagged', 'Jagged lines'],
+  ['sketch', 'Sketched gestures'],
+  ['speedlines', 'Speedlines'],
+];
+const NAME = Object.fromEntries(CATALOG);
+const SPEEDS = [0.25, 0.5, 1, 1.5, 2, 4];
+const MOVE = 1, ANTICIPATION = 0.5, PAUSE = 0.5; // seconds at 1×; the speed changes all but the pauses
+
+const S = { traj: 'aba', speed: 2, paused: false, obj: 'ball', word: 'Hola', step: 3, ss: true, opts: {}, file: null };
+
+// ---------- saved settings (per viewer) ----------
+const STORE = 'smear-catalog-2';
+function save() {
+  try { localStorage.setItem(STORE, JSON.stringify({ traj: S.traj, speed: S.speed, obj: S.obj === 'file' ? 'ball' : S.obj, word: S.word, step: S.step, ss: S.ss, opts: S.opts })); } catch (e) { /* settings just won't survive a reload */ }
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE) || 'null');
+    if (d) Object.assign(S, d);
+  } catch (e) { /* start from the defaults */ }
+}
+// Options of an effect: its defaults with what was changed in its preview.
+const optsOf = (key) => ({ ...EFFECTS[key].defaults, ...(S.opts[key] || {}) });
+
+// ---------- objects ----------
+const OBJECTS = {
+  bw(h) {
+    return makeSprite((g) => { g.beginPath(); g.arc(0, 0, h / 2, 0, Math.PI * 2); g.fillStyle = INK; g.fill(); }, h, h);
+  },
+  ball(h) {
+    const r = h / 2 - 3;
+    return makeSprite((g) => {
+      g.save(); g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.clip();
+      g.fillStyle = '#ec3b33'; g.fillRect(-r, -r, 2 * r, 2 * r);
+      g.fillStyle = '#b3203a';
+      g.beginPath(); g.moveTo(-r, r * 0.05);
+      g.bezierCurveTo(-r * 0.3, -r * 0.25, r * 0.1, r * 0.55, r, r * 0.25);
+      g.lineTo(r, r); g.lineTo(-r, r); g.fill();
+      g.restore();
+      g.fillStyle = '#fff';
+      g.beginPath(); g.ellipse(r * 0.42, -r * 0.55, r * 0.2, r * 0.11, 0.6, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.arc(r * 0.68, -r * 0.3, r * 0.06, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.lineWidth = 5; g.strokeStyle = '#4a0d18'; g.stroke();
+    }, h, h);
+  },
+  text(h) {
+    const word = S.word || 'Hola', size = h * 0.8, font = `800 ${size}px -apple-system, system-ui, sans-serif`;
+    const m = document.createElement('canvas').getContext('2d'); m.font = font;
+    const w = Math.ceil(m.measureText(word).width) + 10;
+    return makeSprite((g) => {
+      g.font = font; g.fillStyle = INK; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(word, 0, h * 0.04);
+    }, w, h);
+  },
+  icon(h) {
+    // A chat bubble with three dots: lime fill, black outline.
+    const w = h * 1.15;
+    return makeSprite((g) => {
+      const x0 = -w / 2 + 6, y0 = -h / 2 + 6, bw = w - 12, bh = h * 0.78, rr = bh * 0.3;
+      g.beginPath(); g.roundRect(x0, y0, bw, bh, rr);
+      g.moveTo(x0 + bw * 0.22, y0 + bh - 2); g.lineTo(x0 + bw * 0.12, h / 2 - 6); g.lineTo(x0 + bw * 0.42, y0 + bh - 2);
+      g.fillStyle = '#c1f11d'; g.fill(); g.lineWidth = 7; g.lineJoin = 'round'; g.strokeStyle = INK; g.stroke();
+      g.fillStyle = INK;
+      for (const k of [-1, 0, 1]) { g.beginPath(); g.arc(k * bw * 0.22, y0 + bh / 2, h * 0.065, 0, Math.PI * 2); g.fill(); }
+    }, w, h);
+  },
+  file(h) { return S.file ? imageSprite(S.file, h) : OBJECTS.bw(h); },
+};
+const SIZE = 200;
+let sprite = null;
+
+// ---------- trajectories ----------
+// Each is a loop of segments: move (1 s / speed), anticipation (0.5 s / speed) or pause (0.5 s). at(p, s)
+// gives the pose for progress p of the segment; consecutive segments meet in the same pose. `surface` — the
+// direction into what it hits, for squash & stretch (null — along the speed it loses). `loop: false` — the
+// cycle does not join itself (the object leaves on one side and comes back on the other), so before its
+// start the object waits where it sets off.
+const FLOOR = 722, WALL_L = 158, WALL_R = 1442;
+const reach = (s, ang) => MotionSmear.profile(s, ang).front;
+const groundY = (s) => FLOOR - 2 - reach(s, Math.PI / 2);
+const move = (at) => ({ kind: 'move', at }), pause = (pose) => ({ kind: 'pause', at: () => pose }), anticipate = (at) => ({ kind: 'anticipation', at });
+const TRAJ = {
+  aba: {
+    label: 'A-B-A',
+    segments: () => {
+      const A = { x: 400, y: 470 }, B = { x: 1200, y: 470 };
+      return [pause(A), move((p) => ({ x: lerp(A.x, B.x, EASE.smooth(p)), y: 470 })), pause(B), move((p) => ({ x: lerp(B.x, A.x, EASE.smooth(p)), y: 470 }))];
+    },
+  },
+  enterexit: {
+    label: 'Enter and exit', loop: false,
+    segments: (s) => [
+      move((p) => ({ x: lerp(-s.w, 800, EASE.out(p)), y: 470 })),
+      pause({ x: 800, y: 470 }),
+      move((p) => ({ x: lerp(800, W + s.w, EASE.exit(p)), y: 470 })),
+    ],
+  },
+  throw: {
+    label: 'Throw', surface: Math.PI / 2,
+    segments: (s) => {
+      const y0 = groundY(s), arc = (a, b, turn) => (p) => ({ x: lerp(a, b, p), y: y0 - 4 * 420 * p * (1 - p), rot: turn(p) });
+      return [
+        pause({ x: 300, y: y0, rot: 0 }),
+        move(arc(300, 1300, (p) => p * Math.PI * 2)),
+        pause({ x: 1300, y: y0, rot: Math.PI * 2 }),
+        move(arc(1300, 300, (p) => (1 - p) * Math.PI * 2)),
+      ];
+    },
+  },
+  swing: {
+    label: 'Swing',
+    // A pendulum from a pivot above the frame, there and back.
+    segments: () => {
+      const pend = (a) => ({ x: 800 + 620 * Math.sin(a), y: -80 + 620 * Math.cos(a), rot: -a });
+      const ease = (p) => (1 - Math.cos(Math.PI * p)) / 2;
+      return [move((p) => pend(lerp(-1.1, 1.1, ease(p)))), move((p) => pend(lerp(1.1, -1.1, ease(p))))];
+    },
+  },
+  wall: {
+    label: 'Into a wall', surface: null,
+    segments: (s) => {
+      const xl = WALL_L + 2 + reach(s, Math.PI), xr = WALL_R - 2 - reach(s, 0);
+      return [
+        move((p) => ({ x: lerp(xl, xr, p * p), y: 470 })),
+        pause({ x: xr, y: 470 }),
+        move((p) => ({ x: lerp(xr, xl, p * p), y: 470 })),
+        pause({ x: xl, y: 470 }),
+      ];
+    },
+    guides(g) {
+      g.beginPath(); g.moveTo(WALL_L, 260); g.lineTo(WALL_L, 680); g.moveTo(WALL_R, 260); g.lineTo(WALL_R, 680); g.stroke();
+    },
+  },
+  drop: {
+    label: 'Drop', surface: Math.PI / 2,
+    // Falls in from above the frame, lands, waits, crouches (the bottom stays on the floor) and jumps back out.
+    segments: (s) => {
+      const y0 = groundY(s), top = -s.h, down = reach(s, Math.PI / 2);
+      const crouch = (p) => 1 - 0.25 * Math.sin(p * Math.PI / 2);
+      return [
+        move((p) => ({ x: 800, y: lerp(top, y0, p * p) })),
+        pause({ x: 800, y: y0 }),
+        anticipate((p) => { const st = crouch(p); return { x: 800, y: y0 + down * (1 - st), stretch: st, axis: Math.PI / 2 }; }),
+        move((p) => ({ x: 800, y: lerp(y0, top, 1 - (1 - p) * (1 - p)) })),
+      ];
+    },
+  },
+};
+TRAJ.throw.guides = TRAJ.drop.guides = (g) => { g.beginPath(); g.moveTo(80, FLOOR); g.lineTo(W - 80, FLOOR); g.stroke(); };
+
+// The cycle for the current trajectory, object and speed: whole frames at 30 fps, so every cycle is drawn
+// the same. path — the plain motion over local frames (0 … period), posed — with squash & stretch, at — held on Ns.
+let C = null;
+function buildCycle() {
+  const T = TRAJ[S.traj], v = SPEEDS[S.speed];
+  const segs = T.segments(sprite).map((sg) => ({ ...sg, n: Math.max(1, Math.round(FPS * (sg.kind === 'pause' ? PAUSE : (sg.kind === 'move' ? MOVE : ANTICIPATION) / v))) }));
+  let t0 = 0;
+  for (const sg of segs) { sg.t0 = t0; t0 += sg.n; }
+  const period = t0, last = segs[segs.length - 1];
+  const path = (f) => {
+    let t = T.loop === false ? Math.min(Math.max(f, 0), period) : ((f % period) + period) % period;
+    let sg = segs.find((x) => t < x.t0 + x.n) || last;
+    return { rot: 0, ...sg.at(clamp01((t - sg.t0) / sg.n), sprite) };
+  };
+  const posed = S.ss ? squashStretch(path, sprite, { fps: FPS, step: S.step, surface: T.surface ?? null }) : path;
+  C = { T, period, path, posed, at: held(posed, S.step) };
+  // The drawing with the highest speed, for the storyboard.
+  let best = -1;
+  C.peak = 0;
+  for (let f = 0; f < period; f += S.step) {
+    const a = C.at(f - S.step), b = C.at(f), sp = Math.hypot(b.x - a.x, b.y - a.y) + Math.abs((b.rot || 0) - (a.rot || 0)) * 100;
+    if (sp > best + 0.01) { best = sp; C.peak = f; }
+  }
+}
+
+// ---------- drawing ----------
+// One frame of the cycle into a canvas of any size: the scene is 1600 × 900 scaled to fit.
+function drawFrame(g, f, key) {
+  const c = g.canvas, k = c.width / W;
+  g.setTransform(k, 0, 0, k, 0, 0);
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  g.fillStyle = PAPER; g.fillRect(0, 0, W, H);
+  if (C.T.guides) { g.strokeStyle = 'rgba(0,0,0,0.28)'; g.lineWidth = 4; C.T.guides(g); }
+  EFFECTS[key].render(g, f, sprite, C.at, { ...optsOf(key), path: C.path, posed: C.posed, step: S.step, fps: FPS, redraw: S.step / FPS });
+}
+// Canvas backing size follows its CSS size and the screen's pixel density.
+function fit(c) {
+  const dpr = Math.min(2, window.devicePixelRatio || 1), w = Math.round(c.clientWidth * dpr);
+  if (w > 0 && c.width !== w) { c.width = w; c.height = Math.round(w * 9 / 16); return true; }
+  return false;
+}
+
+// ---------- grid ----------
+const tiles = [];
+function buildGrid() {
+  const grid = $('grid');
+  for (const [key, name] of CATALOG) {
+    const d = document.createElement('div');
+    d.className = 'tile';
+    d.innerHTML = `<button class="view" aria-label="Open ${name}"><canvas></canvas></button><div class="tfoot"><span>${name}</span><button class="set">⚙ Settings</button></div>`;
+    d.querySelectorAll('button').forEach((b) => b.onclick = () => { location.hash = key; });
+    grid.appendChild(d);
+    const t = { key, canvas: d.querySelector('canvas'), g: null, shown: -1, visible: true };
+    t.g = t.canvas.getContext('2d');
+    tiles.push(t);
+  }
+  const io = new IntersectionObserver((es) => es.forEach((e) => { const t = tiles.find((x) => x.canvas === e.target); t.visible = e.isIntersecting; }));
+  tiles.forEach((t) => io.observe(t.canvas));
+  new ResizeObserver(() => dirty()).observe(grid);
+}
+const dirty = () => { tiles.forEach((t) => { t.shown = -1; }); boardDirty = true; stageShown = -1; };
+
+// ---------- clock ----------
+// The grid runs in real time at 30 fps; the preview has its own clock for slow motion and stepping.
+let clock = 0, last = performance.now();
+const P = { key: null, acc: 0, rate: 1, paused: false };
+let stageShown = -1, boardDirty = true;
+const local = (f) => ((Math.floor(f) % C.period) + C.period) % C.period;
+function tick(now) {
+  const dt = Math.min(0.1, (now - last) / 1000), playing = !S.paused;
+  last = now;
+  if (P.key) {
+    if (playing && !P.paused) P.acc += dt * FPS * P.rate;
+    drawStage();
+  } else {
+    if (playing) clock += dt * FPS;
+    const f = local(clock), drawing = Math.floor(f / S.step);
+    for (const t of tiles) {
+      if (!t.visible) continue;
+      if (fit(t.canvas)) t.shown = -1;
+      if (t.shown === drawing) continue;
+      drawFrame(t.g, drawing * S.step, t.key);
+      t.shown = drawing;
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+// ---------- preview ----------
+const stage = $('stage'), sctx = stage.getContext('2d');
+function drawStage() {
+  const f = local(P.acc), drawing = Math.floor(f / S.step);
+  if (fit(stage)) stageShown = -1;
+  if (drawing !== stageShown) {
+    drawFrame(sctx, drawing * S.step, P.key);
+    stageShown = drawing;
+    const a = C.path(f - 1), b = C.path(f);
+    $('status').textContent = `frame ${f} of ${C.period} · ${(f / FPS).toFixed(2)} s · ${Math.round(Math.hypot(b.x - a.x, b.y - a.y) * FPS)} px/s`;
+    document.querySelectorAll('.cell').forEach((c) => c.classList.toggle('cur', +c.dataset.f === drawing * S.step));
+  }
+  if (boardDirty) buildBoard();
+}
+const setPaused = (p) => { P.paused = p; $('pause').classList.toggle('on', p); };
+const stepFrame = (d) => { setPaused(true); P.acc = Math.floor(P.acc / S.step) * S.step + d * S.step; };
+
+// Storyboard: every drawing of one cycle, drawn in small batches so the page stays responsive.
+let boardJob = 0;
+function buildBoard() {
+  boardDirty = false;
+  const board = $('board'), job = ++boardJob, frames = [];
+  board.innerHTML = '';
+  for (let f = 0; f < C.period; f += S.step) frames.push(f);
+  const cells = frames.map((f) => {
+    const d = document.createElement('div');
+    d.className = 'cell' + (f === C.peak ? ' peak' : '');
+    d.dataset.f = f;
+    d.innerHTML = `<canvas></canvas><div>f ${f} · ${(f / FPS).toFixed(2)} s${f === C.peak ? ' · peak' : ''}</div>`;
+    d.onclick = () => { setPaused(true); P.acc = f; };
+    board.appendChild(d);
+    return d;
+  });
+  let i = 0;
+  const batch = () => {
+    if (job !== boardJob || !P.key) return;
+    const end = Math.min(cells.length, i + 6);
+    for (; i < end; i++) { const c = cells[i].querySelector('canvas'); fit(c); drawFrame(c.getContext('2d'), frames[i], P.key); }
+    if (i < cells.length) setTimeout(batch, 0);
+  };
+  batch();
+  stageShown = -1;
+}
+
+// Effect settings, grouped by what they control. Only this effect's own; redraw follows the drawings.
+const GROUPS = ['Length', 'Where it stretches', 'Shape', 'Lines', 'Where lines come from', 'Front cuts', 'Colour', 'When it appears'];
+const GROUP_OF = {
+  max: 'Length', frames: 'Length', span: 'Length', length: 'Length', shutter: 'Length',
+  profile: 'Where it stretches', at: 'Where it stretches', bell: 'Where it stretches',
+  pick: 'Where lines come from', pickSpread: 'Where lines come from', across: 'Where lines come from', acrossSpread: 'Where lines come from',
+  volume: 'Shape', samples: 'Shape', from: 'Shape', band: 'Shape', soft: 'Shape', teeth: 'Shape', short: 'Shape', gaps: 'Shape', gap: 'Shape', inset: 'Shape',
+  count: 'Lines', width: 'Lines', front: 'Lines', style: 'Lines', layer: 'Lines', spread: 'Lines', jitter: 'Lines',
+  cuts: 'Front cuts', cutLength: 'Front cuts', cutDepth: 'Front cuts', cutWidth: 'Front cuts', cutOvershoot: 'Front cuts',
+  color: 'Colour', mix: 'Colour',
+  threshold: 'When it appears', linger: 'When it appears',
+};
+const HIDDEN = new Set(['redraw']);
+// Seconds show as ms, speeds as px/s (MotionSmear.UNITS).
+function fmt(key, v) {
+  const u = UNITS[key];
+  if (u === 'time' || u === 'count') return String(Math.round(v * 1000));
+  if (u === 'speed') return String(Math.round(v));
+  return String(+v.toFixed(3));
+}
+function setOpt(key, k, v) {
+  const o = { ...(S.opts[key] || {}) };
+  if (v === EFFECTS[key].defaults[k]) delete o[k]; else o[k] = v;
+  if (Object.keys(o).length) S.opts[key] = o; else delete S.opts[key];
+  save();
+  boardDirty = true; stageShown = -1;
+  tiles.forEach((t) => { if (t.key === key) t.shown = -1; });
+}
+function buildParams() {
+  const key = P.key, fx = EFFECTS[key], box = $('params'), o = optsOf(key), groups = {};
+  box.innerHTML = '';
+  for (const p of fx.params) {
+    const k = Array.isArray(p) ? p[0] : p.key;
+    if (HIDDEN.has(k)) continue;
+    (groups[GROUP_OF[k] || 'Shape'] = groups[GROUP_OF[k] || 'Shape'] || []).push(p);
+  }
+  for (const name of GROUPS) {
+    if (!groups[name]) continue;
+    const d = document.createElement('details');
+    d.open = name !== 'When it appears';
+    d.innerHTML = `<summary>${name}</summary>`;
+    for (const p of groups[name]) {
+      if (Array.isArray(p)) {
+        const [k, label, min, max, step] = p;
+        const r = document.createElement('div');
+        r.className = 'rng';
+        r.innerHTML = `<span>${label}</span><input type="range" min="${min}" max="${max}" step="${step}"><output>${fmt(k, o[k])}</output>`;
+        const i = r.querySelector('input'), out = r.querySelector('output');
+        i.value = o[k];
+        i.addEventListener('input', () => { out.textContent = fmt(k, +i.value); setOpt(key, k, +i.value); });
+        d.appendChild(r);
+      } else if (p.color) {
+        const r = document.createElement('div');
+        r.className = 'opt';
+        r.innerHTML = `<span>${p.label}</span><input type="color" value="${o[p.key]}">`;
+        r.querySelector('input').addEventListener('input', (e) => setOpt(key, p.key, e.target.value));
+        d.appendChild(r);
+      } else {
+        const r = document.createElement('div');
+        r.className = 'opt';
+        r.innerHTML = `<span>${p.label}</span><div class="row"></div>`;
+        for (const v of p.options) {
+          const b = document.createElement('button');
+          b.textContent = v; b.classList.toggle('on', o[p.key] === v);
+          b.onclick = () => { setOpt(key, p.key, v); r.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); };
+          r.querySelector('.row').appendChild(b);
+        }
+        d.appendChild(r);
+      }
+    }
+    box.appendChild(d);
+  }
+  const reset = document.createElement('button');
+  reset.id = 'reset'; reset.textContent = 'Reset to defaults';
+  reset.onclick = () => { delete S.opts[key]; save(); buildParams(); boardDirty = true; stageShown = -1; tiles.forEach((t) => { if (t.key === key) t.shown = -1; }); };
+  box.appendChild(reset);
+}
+
+// ---------- views ----------
+function route() {
+  const key = location.hash.slice(1);
+  if (NAME[key]) {
+    P.key = key;
+    P.acc = local(clock);
+    $('grid').hidden = true; $('detail').hidden = false;
+    $('dTitle').textContent = NAME[key];
+    $('dNote').textContent = EFFECTS[key].note;
+    buildParams();
+    boardDirty = true; stageShown = -1;
+    scrollTo(0, 0);
+  } else {
+    if (P.key) clock = P.acc;
+    P.key = null;
+    $('grid').hidden = false; $('detail').hidden = true;
+    tiles.forEach((t) => { t.shown = -1; });
+  }
+}
+addEventListener('hashchange', route);
+$('back').onclick = () => { location.hash = ''; };
+
+// ---------- header ----------
+function rebuild() { sprite = OBJECTS[S.obj](SIZE); buildCycle(); dirty(); }
+function selectTraj(key) {
+  S.traj = key;
+  document.querySelectorAll('[data-traj]').forEach((b) => b.classList.toggle('on', b.dataset.traj === key));
+  $('trajSelect').value = key;
+  buildCycle(); dirty(); save();
+}
+// Trajectory icons: arrows along the path, with the floor or the walls it hits.
+const HEADS = (x, y, a) => { const h = (d) => `${(x - 5 * Math.cos(a + d)).toFixed(1)},${(y - 5 * Math.sin(a + d)).toFixed(1)}`; return `<polyline points="${h(0.6)} ${x},${y} ${h(-0.6)}"/>`; };
+const ICONS = {
+  aba: `<path d="M6 14H34"/>${HEADS(34, 14, 0)}${HEADS(6, 14, Math.PI)}`,
+  enterexit: `<rect class="thin" x="12" y="6" width="16" height="16" rx="1" stroke-dasharray="2 2"/><path d="M2 14H38"/>${HEADS(38, 14, 0)}`,
+  throw: `<path class="ground" d="M3 25H37"/><path d="M8 22Q20 0 32 22"/>${HEADS(32, 22, Math.atan2(22, 12))}${HEADS(8, 22, Math.atan2(22, -12))}`,
+  swing: `<circle cx="20" cy="3" r="1.5"/><path class="thin" d="M20 3V24"/><path d="M8 18Q20 30 32 18"/>${HEADS(32, 18, Math.atan2(-12, 12))}${HEADS(8, 18, Math.atan2(-12, -12))}`,
+  wall: `<path class="ground" d="M4 4V24M36 4V24"/><path d="M10 14H30"/>${HEADS(30, 14, 0)}${HEADS(10, 14, Math.PI)}`,
+  drop: `<path class="ground" d="M8 25H32"/><path d="M20 3V20"/>${HEADS(20, 20, Math.PI / 2)}${HEADS(20, 3, -Math.PI / 2)}`,
+};
+for (const [key, T] of Object.entries(TRAJ)) {
+  const b = document.createElement('button');
+  b.innerHTML = `<svg viewBox="0 0 40 28" aria-hidden="true">${ICONS[key]}</svg>`;
+  b.title = T.label; b.setAttribute('aria-label', T.label); b.dataset.traj = key;
+  b.onclick = () => selectTraj(key);
+  $('trajButtons').appendChild(b);
+  const o = document.createElement('option');
+  o.value = key; o.textContent = T.label;
+  $('trajSelect').appendChild(o);
+}
+$('trajSelect').onchange = (e) => selectTraj(e.target.value);
+const showSpeed = () => { $('speedOut').textContent = `${SPEEDS[S.speed]}×`; };
+$('speed').addEventListener('input', (e) => {
+  // The cycle is rebuilt for the new speed, kept at the same place in it.
+  const share = (P.key ? local(P.acc) : local(clock)) / C.period;
+  S.speed = +e.target.value; showSpeed(); save();
+  buildCycle(); dirty();
+  if (P.key) P.acc = share * C.period; else clock = share * C.period;
+});
+const setPlaying = (paused) => { S.paused = paused; $('playBtn').textContent = paused ? '▶' : '⏸'; $('playBtn').setAttribute('aria-label', paused ? 'Play' : 'Pause'); };
+$('playBtn').onclick = () => setPlaying(!S.paused);
+const menu = $('menu');
+const openMenu = (open) => { menu.classList.toggle('open', open); $('gearBtn').setAttribute('aria-expanded', open); };
+$('gearBtn').onclick = (e) => { e.stopPropagation(); openMenu(!menu.classList.contains('open')); };
+menu.addEventListener('click', (e) => e.stopPropagation());
+document.addEventListener('click', () => openMenu(false));
+function selectObject(key) {
+  S.obj = key;
+  document.querySelectorAll('[data-obj]').forEach((b) => b.classList.toggle('on', b.dataset.obj === key));
+  rebuild(); save();
+}
+document.querySelectorAll('[data-obj]').forEach((b) => b.onclick = () => {
+  if (b.dataset.obj === 'file') return $('file').click(); // always asks for a file; drop works too
+  selectObject(b.dataset.obj);
+});
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const img = new Image();
+  img.onload = () => { S.file = img; selectObject('file'); };
+  img.src = URL.createObjectURL(file);
+}
+$('file').onchange = (e) => loadFile(e.target.files[0]);
+$('word').addEventListener('input', (e) => { S.word = e.target.value; save(); if (S.obj === 'text') rebuild(); });
+$('step').addEventListener('input', (e) => { S.step = +e.target.value; $('stepOut').textContent = S.step; buildCycle(); dirty(); save(); });
+$('ss').addEventListener('input', (e) => { S.ss = e.target.checked; buildCycle(); dirty(); save(); });
+
+// ---------- preview controls ----------
+$('pause').onclick = () => setPaused(!P.paused);
+$('prev').onclick = () => stepFrame(-1);
+$('next').onclick = () => stepFrame(1);
+document.querySelectorAll('#rates [data-rate]').forEach((b) => b.onclick = () => {
+  P.rate = +b.dataset.rate;
+  document.querySelectorAll('#rates [data-rate]').forEach((x) => x.classList.toggle('on', x === b));
+});
+addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'text') return;
+  if (e.key === 'Escape') { if (menu.classList.contains('open')) openMenu(false); else if (P.key) location.hash = ''; return; }
+  if (!P.key) return;
+  if (e.key === 'ArrowLeft') stepFrame(-1);
+  else if (e.key === 'ArrowRight') stepFrame(1);
+  else if (e.key === ' ') { e.preventDefault(); setPaused(!P.paused); }
+});
+// Drop an image anywhere to animate it.
+const main = $('main');
+main.addEventListener('dragover', (e) => { e.preventDefault(); main.classList.add('drag'); });
+main.addEventListener('dragleave', () => main.classList.remove('drag'));
+main.addEventListener('drop', (e) => { e.preventDefault(); main.classList.remove('drag'); loadFile(e.dataTransfer.files[0]); });
+
+// ---------- start ----------
+load();
+if (!TRAJ[S.traj]) S.traj = 'aba';
+if (!OBJECTS[S.obj]) S.obj = 'ball';
+if (!SPEEDS[S.speed]) S.speed = 2;
+for (const k of Object.keys(S.opts)) if (!NAME[k]) delete S.opts[k];
+$('speed').value = S.speed; showSpeed();
+$('step').value = S.step; $('stepOut').textContent = S.step;
+$('ss').checked = S.ss;
+$('word').value = S.word;
+document.querySelectorAll('[data-obj]').forEach((b) => b.classList.toggle('on', b.dataset.obj === S.obj));
+sprite = OBJECTS[S.obj](SIZE);
+buildGrid();
+selectTraj(S.traj);
+route();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
