@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Schools map — French–English schools with CP in Paris</title>
+<meta name="description" content="Public bilingual schools, international sections and private schools under state contract that teach CP in French and English, in Paris and Île-de-France, with catchment areas and school indicators.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#17212b;--muted:#64748b;--line:#dbe2ea;--bg:#f5f7fa;--public:#1769aa;--intl:#7b4ab5;--private:#b76a19}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{padding:18px 22px;background:#fff;border-bottom:1px solid var(--line)}h1{font-size:22px;line-height:1.2;margin:0 0 6px}header p{margin:0;color:var(--muted)}
+.bar{background:#fff;border-bottom:1px solid var(--line)}.bar .in{display:flex;align-items:center;height:48px;padding:0 22px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden}.bar a{color:var(--muted);font-weight:500;text-decoration:none}.bar a:hover{color:var(--ink)}.bar .sep{color:#a3a3a3;font-weight:400;margin:0 6px}
+main{display:grid;grid-template-columns:400px 1fr;height:calc(100vh - 138px);min-height:560px}
+aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid var(--line)}
+#map{height:100%;min-height:560px}
+.search{display:flex;gap:7px;margin-bottom:10px}.search input{min-width:0;flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}.search button{border:0;background:#17212b;color:#fff;border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.filters label{display:flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid var(--line);border-radius:20px;font-size:12px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:6px 0 12px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
+.notice{background:#fff8e7;border:1px solid #f0dca9;border-radius:8px;padding:9px 10px;margin:10px 0;color:#684d13;font-size:12px}
+.notice.error{background:#fdecec;border-color:#f1c0c0;color:#7a1f1f}
+.status{font-size:12px;color:var(--muted);padding:7px 0}
+.group-title{font-size:13px;font-weight:750;margin:18px 0 7px;display:flex;justify-content:space-between}
+.school{border:1px solid var(--line);border-radius:9px;padding:10px;margin:7px 0;background:#fff}
+.school.active{border-color:#17212b;box-shadow:0 0 0 1px #17212b}
+.school h3{font-size:14px;margin:0 0 3px}.school .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+.school p{font-size:12px;margin:4px 0 7px}.school a{font-size:12px;color:#145e9a;text-decoration:none;margin-right:8px}.school a:hover{text-decoration:underline}
+.school button{background:#eef4fa;color:#174c76;border:1px solid #d5e3ef;border-radius:6px;padding:5px 8px;font-size:12px;cursor:pointer}
+.stats{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12px;background:#f7f9fb;border-radius:7px;padding:7px 9px;margin:6px 0 8px}
+.stats dt{color:var(--muted)}.stats dd{margin:0;font-variant-numeric:tabular-nums}
+.ips-bar{display:inline-block;vertical-align:middle;width:70px;height:6px;border-radius:3px;background:#e5eaf0;margin-left:6px;position:relative;overflow:hidden}
+.ips-bar i{position:absolute;left:0;top:0;bottom:0;background:#17212b;border-radius:3px}
+.tag{font-size:10px;font-weight:700;border-radius:20px;padding:2px 6px;background:#edf2f7;color:#405366;margin-left:5px}
+.tag.public{background:#e6f2fb;color:#125b91}.tag.intl{background:#f1eafb;color:#67379b}.tag.private{background:#fff0df;color:#91510e}.tag.rep{background:#fdecec;color:#8a2323}
+.small{font-size:11px;color:var(--muted)}
+#result{display:none;padding:9px 10px;border:1px solid #b7d7ed;background:#eff8ff;border-radius:8px;margin:8px 0;font-size:12px}
+.gm-style .gm-style-iw{font-size:13px;line-height:1.4}.gm-style .gm-style-iw a{color:#145e9a}
+.gm-style .gm-style-iw .stats{margin:6px 0 4px}
+@media(max-width:800px){.bar .in{padding:0 14px}main{display:flex;flex-direction:column;height:auto}#map{order:0;height:48vh;min-height:350px}aside{order:1;max-height:none;border-right:0}.school{margin:6px 0}header{padding:14px}}
+</style>
+</head>
+<body>
+<nav class="bar"><div class="in"><a href="/">tsytkin.com</a><span class="sep">/</span><a href="/dashboards/">Dashboards</a><span class="sep">/</span>schoolmap</div></nav>
+<header>
+<h1>French–English schools with CP</h1>
+<p>Paris and nearby suburbs · public bilingual schools, international sections and private schools under state contract · school year 2026–2027</p>
+</header>
+<main>
+<aside>
+  <div class="search">
+    <input id="address" list="addrList" autocomplete="off" placeholder="Apartment address to check the catchment area…" aria-label="Apartment address"/>
+    <datalist id="addrList"></datalist>
+    <button id="searchBtn">Check</button>
+  </div>
+  <div id="result"></div>
+  <div class="filters">
+    <label><input type="checkbox" id="showParis" checked> Public Paris</label>
+    <label><input type="checkbox" id="showIntl" checked> Public international</label>
+    <label><input type="checkbox" id="showPrivate" checked> Private (sous contrat)</label>
+    <label><input type="checkbox" id="showSectors"> All Paris catchment areas</label>
+  </div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--public)"></i>Public, Paris</span>
+    <span><i class="dot" style="background:var(--intl)"></i>International sections</span>
+    <span><i class="dot" style="background:var(--private)"></i>Private sous contrat</span>
+  </div>
+  <div id="mapError" class="notice error" style="display:none"></div>
+  <div class="notice"><b>How to read the map.</b> Click a blue pin (or “Show on map”) to see that school’s catchment area (secteur scolaire) for 2026–2027. Public Paris schools admit by home address, not by distance. International sections admit by application and language assessment, and private schools by their own process, so they have no catchment area. Suburban catchment areas are not shown.</div>
+  <div id="sectorStatus" class="status">Loading official Paris catchment boundaries…</div>
+  <div id="schoolList"></div>
+  <div class="small" style="padding:12px 2px 24px">
+    <b>Method.</b> Included: schools where both CP and an English programme are confirmed (a bilingual programme or a British/American international section). Ordinary English lessons (LV1) do not count as a bilingual programme. Check places, campus and admission rules for 2026–2027 before applying.<br><br>
+    <b>Indicators.</b> IPS (indice de position sociale) is the ministry’s index of pupils’ family social background, 2024–2025: national average about 106; higher means more advantaged families. It is not a measure of teaching quality. Pupils and classes are for the 2025 school year. REP / REP+ means the school is in the priority education network. Source: data.education.gouv.fr (IPS des écoles; Effectifs d’élèves par école).<br><br>
+    <b>Locations.</b> School coordinates and addresses come from the official Annuaire de l’éducation (data.education.gouv.fr, November 2026), which also corrected several addresses. Apartment addresses are looked up with the Base Adresse Nationale (api-adresse.data.gouv.fr). Catchment areas: DASCO / Ville de Paris.
+  </div>
+</aside>
+<div id="map"></div>
+</main>
+<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+<script>
+const GOOGLE_MAPS_KEY='AIzaSyDfA6igPEOu2hV78UP6PGz-tVhoM4uZBaY';
+const PARIS_PDF="https://cdn.paris.fr/paris/2024/05/27/les-ecoles-publiques-bilingues-a-paris-20240527-RZCN.pdf";
+const MEN_SI="https://www.education.gouv.fr/les-sections-internationales-l-ecole-primaire-12443";
+const schools = [
+/* Public bilingual English schools in Paris: Ville de Paris list, 27 May 2024. sector = school name as spelled in the DASCO layer. */
+{id:"pa1",cat:"paris",uai:"0750818G",sector:"ARGENTEUIL",name:"École élémentaire Argenteuil (Suzanne Spaak)",city:"Paris 1st",address:"11 rue d'Argenteuil, 75001 Paris",lat:48.864886,lng:2.333824,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa2",cat:"paris",uai:"0750947X",sector:"NEUVE ST PIERRE",name:"École élémentaire Neuve Saint-Pierre",city:"Paris 4th",address:"15 rue Neuve Saint-Pierre, 75004 Paris",lat:48.853791,lng:2.363137,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. Shares one catchment area with Fauconnier.",src:PARIS_PDF},
+{id:"pa3",cat:"paris",uai:"0751237M",sector:"SURENE",name:"École élémentaire Surène",city:"Paris 8th",address:"18 rue de Surène, 75008 Paris",lat:48.871060,lng:2.320572,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa4",cat:"paris",uai:"0751136C",sector:"LAMORICIERE",name:"École élémentaire Lamoricière (Léonie Wanner)",city:"Paris 12th",address:"8 avenue Lamoricière, 75012 Paris",lat:48.844730,lng:2.412251,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. Shares its catchment area with the other elementary school at no. 10 (Robert-Jean Longuet), so living in the area does not guarantee the bilingual one.",src:PARIS_PDF},
+{id:"pa5",cat:"paris",uai:"0750938M",sector:"MAURICE ROUVIER",name:"École élémentaire Maurice Rouvier",city:"Paris 14th",address:"8 rue Maurice Rouvier, 75014 Paris",lat:48.831141,lng:2.309803,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa6",cat:"paris",uai:"0750813B",sector:"AMIRAL ROUSSIN",name:"École élémentaire Amiral Roussin",city:"Paris 15th",address:"35 rue de l'Amiral Roussin, 75015 Paris",lat:48.844233,lng:2.299626,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. The elementary school is at no. 35; no. 33 is the nursery school.",src:PARIS_PDF},
+{id:"pa7",cat:"paris",uai:"0751028K",sector:"MADEMOISELLE",name:"École élémentaire Mademoiselle",city:"Paris 15th",address:"81 rue Mademoiselle, 75015 Paris",lat:48.843380,lng:2.300408,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. The official directory and the Paris catchment data place it at no. 81, not 74.",src:PARIS_PDF},
+{id:"pa8",cat:"paris",uai:"0751094G",sector:"DOUDEAUVILLE",name:"École élémentaire Doudeauville",city:"Paris 18th",address:"7 rue Doudeauville, 75018 Paris",lat:48.888872,lng:2.358736,kind:"Public — bilingual English",note:"Elementary school, CP–CM2. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa9",cat:"paris",uai:"0751376N",sector:"POULLETIER",name:"École polyvalente Poulletier (Île Saint-Louis)",city:"Paris 4th",address:"18 rue Poulletier, 75004 Paris",lat:48.851471,lng:2.358314,kind:"Public — bilingual English",note:"Nursery + elementary school, so CP is included. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa10",cat:"paris",uai:"0751302H",sector:"FAUCONNIER",name:"École polyvalente Ave Maria–Fauconnier",city:"Paris 4th",address:"4 rue du Fauconnier, 75004 Paris",lat:48.853642,lng:2.359654,kind:"Public — bilingual English",note:"Nursery + elementary school, so CP is included. Shares one catchment area with Neuve Saint-Pierre.",src:PARIS_PDF},
+{id:"pa11",cat:"paris",uai:"0750995Z",sector:"ST BENOIT",name:"École polyvalente Saint-Benoît",city:"Paris 6th",address:"12 rue Saint-Benoît, 75006 Paris",lat:48.855100,lng:2.333048,kind:"Public — bilingual English",note:"Nursery + elementary school, so CP is included. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa12",cat:"paris",uai:"0750857Z",sector:"CHOMEL",name:"École polyvalente Chomel",city:"Paris 7th",address:"8 rue Chomel, 75007 Paris",lat:48.852174,lng:2.325549,kind:"Public — bilingual English",note:"Nursery + elementary school, so CP is included. Admission by catchment area.",src:PARIS_PDF},
+{id:"pa13",cat:"paris",uai:"0751160D",sector:"LOUIS DE FUNES",name:"École polyvalente Monceau–Louis de Funès",city:"Paris 8th",address:"2 allée Louis de Funès, 75008 Paris",lat:48.875907,lng:2.305877,kind:"Public — bilingual English",note:"Nursery + elementary school, so CP is included. Address from the official directory; check the entrance on rue de Monceau with the school.",src:PARIS_PDF},
+{id:"pa14",cat:"paris",uai:"0755710Z",sector:"BERNARD BUFFET",name:"École polyvalente Bernard Buffet",city:"Paris 17th",address:"14 rue Bernard Buffet, 75017 Paris",lat:48.891688,lng:2.316047,kind:"Public — bilingual English",note:"Nursery + elementary school, so CP is included. Former address: impasse Chalabre.",src:PARIS_PDF},
+
+/* Public international sections, Ministry list of primary international sections */
+{id:"in1",cat:"intl",uai:"0920395E",name:"École élémentaire Ferdinand Buisson",city:"Boulogne-Billancourt (92)",address:"85 rue du Point du Jour, 92100 Boulogne-Billancourt",lat:48.830152,lng:2.250264,kind:"Public — British section",note:"Application file and language assessment. Confirm CP entry with the school for the target year.",src:MEN_SI},
+{id:"in2",cat:"intl",uai:"0922475R",name:"École élémentaire Pierre de Ronsard",city:"Courbevoie (92)",address:"3 chemin Pierre de Ronsard, 92400 Courbevoie",lat:48.899287,lng:2.231981,kind:"Public — British section",note:"In 2024 the académie moved this British section to Maxime Gorki in Nanterre; Courbevoie took the closure to the Conseil d’État (April 2026). Check whether a CP class opens for 2026–27.",src:MEN_SI},
+{id:"in3",cat:"intl",uai:"0921708G",name:"École élémentaire Maxime Gorki",city:"Nanterre (92)",address:"14 allée de l'Arlequin, 92000 Nanterre",lat:48.890472,lng:2.228266,kind:"Public — British section",note:"British section; entry at CP and at CE2 (DSDEN 92, 2026–27). Took over the section moved from Ronsard, Courbevoie.",src:"https://www.legifrance.gouv.fr/eli/arrete/2026/2/23/MENE2605108A/jo/texte"},
+{id:"in4",cat:"intl",uai:"0780859K",name:"École élémentaire Louis Pasteur",city:"La Celle-Saint-Cloud (78)",address:"1 avenue Auguste Dutreux, 78170 La Celle-Saint-Cloud",lat:48.850040,lng:2.144215,kind:"Public — British section",note:"Confirm entry level and admission process with the school.",src:MEN_SI},
+{id:"in5",cat:"intl",uai:"0781966N",name:"École élémentaire Félix Éboué–Wilson",city:"Le Pecq (78)",address:"3 rue de Seine, 78230 Le Pecq",lat:48.894220,lng:2.111509,kind:"Public — British section",note:"Confirm CP entry and admission process.",src:MEN_SI},
+{id:"in6",cat:"intl",uai:"0782251Y",name:"École Jehan Alain",city:"Le Pecq (78)",address:"4 rue Jehan Alain, 78230 Le Pecq",lat:48.896310,lng:2.114165,kind:"Public — British section",note:"The official directory lists only a nursery school (maternelle) at this address: check where CP is taught.",src:MEN_SI},
+{id:"in7",cat:"intl",uai:"0781129D",name:"École primaire du Lycée international",city:"Saint-Germain-en-Laye (78)",address:"2 rue du Fer à Cheval, 78100 Saint-Germain-en-Laye",lat:48.898465,lng:2.062406,kind:"Public — American section (British to confirm)",note:"Many language sections on one site. The 2026 decree lists the American section for this primary school; a British section is known to run on the site, confirm it covers CP. Selective entry.",src:MEN_SI},
+{id:"in8",cat:"intl",uai:"0920721J",name:"École élémentaire Gambetta A",city:"Sèvres (92)",address:"4 rue Victor Hugo, 92310 Sèvres",lat:48.824097,lng:2.214028,kind:"Public — British section",note:"Confirm CP entry and the local procedure.",src:MEN_SI},
+{id:"in9",cat:"intl",uai:"0951156R",name:"École élémentaire L’Hermitage",city:"Pontoise (95)",address:"10 rue Petit de Coupray, 95300 Pontoise",lat:49.051482,lng:2.103842,kind:"Public — British section",note:"Far from Paris; included for regional completeness.",src:MEN_SI},
+{id:"in10",cat:"intl",uai:"0921922P",name:"École élémentaire Guynemer",city:"Courbevoie (92)",address:"24 rue Carnot, 92400 Courbevoie",lat:48.894387,lng:2.246119,kind:"Public — American section",note:"Teaching in English. Application file and language assessment.",src:MEN_SI},
+{id:"in11",cat:"intl",uai:"0781119T",name:"École élémentaire Schnapper",city:"Saint-Germain-en-Laye (78)",address:"26 rue Schnapper, 78100 Saint-Germain-en-Laye",lat:48.889556,lng:2.088824,kind:"Public — American section",note:"Confirm CP entry and procedure.",src:MEN_SI},
+{id:"in12",cat:"intl",uai:"0770381W",name:"École élémentaire internationale Léonard de Vinci",city:"Fontainebleau (77)",address:"Rue de Verdun, 77300 Fontainebleau",lat:48.410304,lng:2.695374,kind:"Public — British section",note:"Outside the near suburbs; included for regional completeness.",src:MEN_SI},
+{id:"in13",cat:"intl",uai:"0781186R",name:"École élémentaire Louis Clément",city:"Buc (78)",address:"Route de la Minière, 78530 Buc",lat:48.770641,lng:2.108609,kind:"Public — British section",note:"Listed in the 2026 decree. Confirm CP entry and admission process.",src:"https://www.legifrance.gouv.fr/eli/arrete/2026/2/23/MENE2605108A/jo/texte"},
+{id:"in14",cat:"intl",uai:"0950816W",name:"École élémentaire Roland Malvitte",city:"Gonesse (95)",address:"18 rue Claret, 95500 Gonesse",lat:48.986942,lng:2.440387,kind:"Public — British section",note:"Listed in the 2026 decree. Priority-education school; new sections are now opened mainly in such areas. Confirm CP entry.",src:"https://www.legifrance.gouv.fr/eli/arrete/2026/2/23/MENE2605108A/jo/texte"},
+
+/* Private schools with documented sous-contrat primary bilingual CP */
+{id:"pr1",cat:"private",uai:"0752203M",name:"EIB Lamartine",city:"Paris 16th",address:"123 rue de la Pompe, 75116 Paris",lat:48.866113,lng:2.279665,kind:"Private sous contrat (all classes) — French–English bilingual",note:"CP: 1 h 30 of English a day, taught by English-speaking teachers.",src:"https://www.eibparis.com/ecoles-eib/eib-lamartine"},
+{id:"pr2",cat:"private",uai:"0752820H",name:"EIB Monceau",city:"Paris 8th",address:"6 avenue Van Dyck, 75008 Paris",lat:48.878354,lng:2.306368,kind:"Private sous contrat (some classes) — French–English bilingual",note:"CP: English is oral only, to consolidate French (except for native English speakers). Two buildings, one at 7 rue Alfred de Vigny.",src:"https://www.eibparis.com/ecoles-eib/eib-monceau-primaire/elementaire"},
+{id:"pr3",cat:"private",uai:"0750179M",name:"École Jeannine Manuel — Edgar Faure",city:"Paris 15th",address:"15 rue Edgar Faure, 75015 Paris",lat:48.852780,lng:2.295019,kind:"Private sous contrat (all classes) — French–English bilingual",note:"Bilingual nursery and elementary school, CP included. The elementary site on rue du Théâtre takes the older classes.",src:"https://www.fabert.com/etablissement-prive/10483/EJM-ECOLE-JEANNINE-MANUEL-EDGAR-FAURE.html"},
+{id:"pr4",cat:"private",uai:"0750187W",name:"École Jeannine Manuel — Suffren",city:"Paris 7th",address:"141 avenue de Suffren, 75007 Paris",lat:48.847437,lng:2.307281,kind:"Private sous contrat (all classes) — French–English bilingual",note:"Nursery to CE1, CP included. Separate site from Edgar Faure.",src:"https://www.fabert.com/etablissement-prive/10484/EJM-ECOLE-JEANNINE-MANUEL-SUFFREN.html"},
+{id:"pr5",cat:"private",uai:"0750141W",name:"École Massillon — primary",city:"Paris 4th",address:"9 rue du Petit Musc, 75004 Paris",lat:48.852042,lng:2.363132,kind:"Private sous contrat (all classes) — French–English bilingual classes",note:"Under state contract; advertises French–English bilingual classes. Check that a bilingual CP class opens for the target year.",src:"https://www.fabert.com/school/2627/ETABLISSEMENT-PRIVE-MASSILLON.popup.html"},
+{id:"pr6",cat:"private",uai:"0750154K",name:"Collège Sévigné — bilingual primary school",city:"Paris 14th",address:"95 boulevard Arago, 75014 Paris",lat:48.834314,lng:2.334643,kind:"Private sous contrat (all classes) — French–English bilingual",note:"Equal French/English hours from moyenne section; classes from CP to CM2. The official directory places the primary school on boulevard Arago; the main Collège Sévigné address is 28 rue Pierre Nicole (5th).",src:"https://www.collegesevigne.org/primaire-3/"},
+{id:"pr7",cat:"private",uai:"0754748D",name:"Eurécole",city:"Paris 16th",address:"5 rue de Lübeck, 75116 Paris",lat:48.866660,lng:2.294246,kind:"Private sous contrat (some classes) — trilingual",note:"6 h of English a week from CP to CM2. The official directory lists the school under contract for only part of its classes: confirm the CP class is under contract.",src:"https://www.fabert.com/etablissement-prive/11169/EURECOLE-MATERNELLE-ET-PRIMAIRE-ETABLISSEMENT-PRIVE-LAIQUE-TRILINGUE.html"},
+{id:"pr8",cat:"private",uai:"0750206S",name:"École Jeannine Manuel — rue du Théâtre (elementary)",city:"Paris 15th",address:"70 rue du Théâtre, 75015 Paris",lat:48.847748,lng:2.290905,kind:"Private sous contrat — American international section",note:"The only primary English international section inside Paris in the 2026 decree. No CP pupils on this site in 2025: children start at the Edgar Faure or Suffren site and continue here.",src:"https://www.legifrance.gouv.fr/eli/arrete/2026/2/23/MENE2605108A/jo/texte"}
+];
+
+/* Generated by ecoles-bilingues-cp/fetch_indicators.py */
+const indicators = /*INDICATORS*/{"0750818G":{"uai":"0750818G","ips":129.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":97.0,"classes":5.0,"elem":97.0,"cp":19.0,"rep":false,"rep_plus":false},"0750947X":{"uai":"0750947X","ips":122.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":92.0,"classes":5.0,"elem":92.0,"cp":20.0,"rep":false,"rep_plus":false},"0751237M":{"uai":"0751237M","ips":135.4,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":125.0,"classes":6.0,"elem":125.0,"cp":31.0,"rep":false,"rep_plus":false},"0751136C":{"uai":"0751136C","ips":99.4,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":194.0,"classes":10.0,"elem":194.0,"cp":48.0,"rep":false,"rep_plus":false},"0750938M":{"uai":"0750938M","ips":94.2,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":195.0,"classes":12.0,"elem":195.0,"cp":40.0,"rep":true,"rep_plus":false},"0750813B":{"uai":"0750813B","ips":118.9,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":266.0,"classes":11.0,"elem":266.0,"cp":58.0,"rep":false,"rep_plus":false},"0751028K":{"uai":"0751028K","ips":130.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":268.0,"classes":11.0,"elem":268.0,"cp":54.0,"rep":false,"rep_plus":false},"0751094G":{"uai":"0751094G","ips":94.7,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":148.0,"classes":10.0,"elem":148.0,"cp":32.0,"rep":true,"rep_plus":false},"0751376N":{"uai":"0751376N","ips":null,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":247.0,"classes":11.0,"elem":154.0,"cp":36.0,"rep":false,"rep_plus":false},"0751302H":{"uai":"0751302H","ips":122.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":196.0,"classes":9.0,"elem":86.0,"cp":11.0,"rep":false,"rep_plus":false},"0750995Z":{"uai":"0750995Z","ips":124.1,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":249.0,"classes":10.0,"elem":148.0,"cp":33.0,"rep":false,"rep_plus":false},"0750857Z":{"uai":"0750857Z","ips":147.8,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":252.0,"classes":12.0,"elem":183.0,"cp":33.0,"rep":false,"rep_plus":false},"0751160D":{"uai":"0751160D","ips":133.1,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":327.0,"classes":15.0,"elem":200.0,"cp":41.0,"rep":false,"rep_plus":false},"0755710Z":{"uai":"0755710Z","ips":110.9,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":214.0,"classes":9.0,"elem":116.0,"cp":15.0,"rep":false,"rep_plus":false},"0920395E":{"uai":"0920395E","ips":124.9,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":444.0,"classes":18.0,"elem":444.0,"cp":82.0,"rep":false,"rep_plus":false},"0922475R":{"uai":"0922475R","ips":138.6,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":170.0,"classes":8.0,"elem":170.0,"cp":28.0,"rep":false,"rep_plus":false},"0921708G":{"uai":"0921708G","ips":88.1,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":217.0,"classes":13.0,"elem":217.0,"cp":44.0,"rep":true,"rep_plus":false},"0780859K":{"uai":"0780859K","ips":140.9,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":260.0,"classes":10.0,"elem":260.0,"cp":43.0,"rep":false,"rep_plus":false},"0781966N":{"uai":"0781966N","ips":143.7,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":297.0,"classes":12.0,"elem":297.0,"cp":51.0,"rep":false,"rep_plus":false},"0782251Y":{"uai":"0782251Y","eff_year":"2025","eleves":137.0,"classes":6.0,"elem":0,"cp":0.0,"rep":false,"rep_plus":false},"0781129D":{"uai":"0781129D","ips":148.7,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":541.0,"classes":21.0,"elem":516.0,"cp":74.0,"rep":false,"rep_plus":false},"0920721J":{"uai":"0920721J","ips":135.6,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":245.0,"classes":11.0,"elem":245.0,"cp":40.0,"rep":false,"rep_plus":false},"0951156R":{"uai":"0951156R","ips":133.6,"ips_year":"2024-2025","ips_dep":104.9,"ips_nat":105.8,"dep":"VAL-D'OISE","eff_year":"2025","eleves":264.0,"classes":10.0,"elem":264.0,"cp":44.0,"rep":false,"rep_plus":false},"0921922P":{"uai":"0921922P","ips":117.1,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":333.0,"classes":16.0,"elem":333.0,"cp":61.0,"rep":false,"rep_plus":false},"0781119T":{"uai":"0781119T","ips":142.0,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":372.0,"classes":15.0,"elem":372.0,"cp":63.0,"rep":false,"rep_plus":false},"0770381W":{"uai":"0770381W","ips":142.0,"ips_year":"2024-2025","ips_dep":108.1,"ips_nat":105.8,"dep":"SEINE-ET-MARNE","eff_year":"2025","eleves":231.0,"classes":9.0,"elem":231.0,"cp":39.0,"rep":false,"rep_plus":false},"0752203M":{"uai":"0752203M","ips":151.2,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":224.0,"classes":8.0,"elem":144.0,"cp":32.0,"rep":false,"rep_plus":false},"0752820H":{"uai":"0752820H","ips":153.0,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":877.0,"classes":39.0,"elem":666.0,"cp":119.0,"rep":false,"rep_plus":false},"0750179M":{"uai":"0750179M","ips":null,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":371.0,"classes":16.0,"elem":323.0,"cp":100.0,"rep":false,"rep_plus":false},"0750187W":{"uai":"0750187W","eff_year":"2025","eleves":193.0,"classes":8.0,"elem":99.0,"cp":48.0,"rep":false,"rep_plus":false},"0750141W":{"uai":"0750141W","ips":153.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":306.0,"classes":11.0,"elem":276.0,"cp":50.0,"rep":false,"rep_plus":false},"0750154K":{"uai":"0750154K","ips":155.1,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":305.0,"classes":7.0,"elem":239.0,"cp":48.0,"rep":false,"rep_plus":false},"0754748D":{"uai":"0754748D","ips":148.6,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":163.0,"classes":9.0,"elem":127.0,"cp":24.0,"rep":false,"rep_plus":false},"0781186R":{"uai":"0781186R","ips":141.4,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":181.0,"classes":8.0,"elem":181.0,"cp":26.0,"rep":false,"rep_plus":false},"0950816W":{"uai":"0950816W","ips":91.8,"ips_year":"2024-2025","ips_dep":104.9,"ips_nat":105.8,"dep":"VAL-D'OISE","eff_year":"2025","eleves":296.0,"classes":17.0,"elem":296.0,"cp":56.0,"rep":true,"rep_plus":false},"0750206S":{"uai":"0750206S","ips":158.2,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":387.0,"classes":16.0,"elem":387.0,"cp":0.0,"rep":false,"rep_plus":false}};
+
+const colors={paris:'#1769aa',intl:'#7b4ab5',private:'#b76a19'};
+let map, info, sectorFeatures=[], schoolMarkers={}, addressMarker=null;
+let selectedSector=null, addressHits=new Set();
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function visible(cat){return cat==='paris'?document.getElementById('showParis').checked:cat==='intl'?document.getElementById('showIntl').checked:document.getElementById('showPrivate').checked;}
+function fmt(n,d=0){return n==null?'—':n.toLocaleString('en-GB',{maximumFractionDigits:d,minimumFractionDigits:d});}
+function statsHtml(s){
+ const x=indicators[s.uai];if(!x)return '';
+ const rows=[];
+ if(x.ips!=null){
+  const w=Math.max(0,Math.min(100,(x.ips-60)/(160-60)*100));
+  rows.push(['Social index (IPS)',`<b>${fmt(x.ips,1)}</b><span class="ips-bar" title="scale 60–160"><i style="width:${w}%"></i></span><br><span class="small">dept ${fmt(x.ips_dep,1)} · France ${fmt(x.ips_nat,1)} · ${esc(x.ips_year)}</span>`]);
+ }else rows.push(['Social index (IPS)','<span class="small">not published</span>']);
+ if(x.eleves!=null){
+  rows.push(['Pupils',`${fmt(x.eleves)} in ${fmt(x.classes)} classes · ${fmt(x.classes?x.eleves/x.classes:null,1)} per class`]);
+  rows.push(['CP pupils',`${fmt(x.cp)} <span class="small">(${esc(x.eff_year)})</span>`]);
+ }
+ if(x.rep||x.rep_plus)rows.push(['Priority education',x.rep_plus?'REP+':'REP']);
+ return '<dl class="stats">'+rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+'</dl>';
+}
+function zoneLine(s){
+ if(s.cat==='paris')return '';
+ return `<span class="small">${s.cat==='intl'?'No catchment area: admission by application and language assessment.':'Private school: no catchment area.'}</span><br>`;
+}
+function schoolPopup(s){return `<b>${esc(s.name)}</b><br>${esc(s.address)}<br>${esc(s.kind)}${statsHtml(s)}${esc(s.note)}<br>${zoneLine(s)}<a target="_blank" rel="noopener" href="${s.src}">Source / details</a>`;}
+function showMapError(html){const el=document.getElementById('mapError');el.innerHTML=html;el.style.display='block';}
+window.gm_authFailure=()=>showMapError('<b>Google Maps rejected the key.</b> Most likely the Maps JavaScript API is not enabled in the key’s project: <a target="_blank" rel="noopener" href="https://console.cloud.google.com/apis/library/maps-backend.googleapis.com">enable it</a>. If it is, check the key restrictions: an HTTP-referrer restriction will not work for a local file. The school list and the address check work without the map.');
+
+function sectorMatches(f,key){return ['lib_etab_1','lib_etab_2','lib_etab_3','lib_etab_4'].some(k=>String(f.getProperty?f.getProperty(k)||'':(f.properties||{})[k]||'').includes(key));}
+function refreshSectors(){
+ if(!map)return;
+ const all=document.getElementById('showSectors').checked;
+ map.data.setStyle(f=>{
+  const sel=selectedSector&&sectorMatches(f,selectedSector);
+  const hit=addressHits.has(f.getProperty('objectid'));
+  return {visible:all||sel||hit,strokeColor:sel?'#0b3f66':'#125b91',strokeWeight:sel?1:.7,strokeOpacity:.6,fillColor:sel?'#2f86c6':'#4c9bd1',fillOpacity:sel?.4:.2,clickable:true};
+ });
+}
+function fitSector(key){
+ const b=new google.maps.LatLngBounds();let any=false;
+ map.data.forEach(f=>{if(sectorMatches(f,key)){f.getGeometry().forEachLatLng(ll=>{b.extend(ll);any=true;});}});
+ return any?b:null;
+}
+function showSchool(id){
+ const s=schools.find(x=>x.id===id);if(!s)return;
+ document.querySelectorAll('.school').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+ if(!map)return;
+ selectedSector=s.sector||null;refreshSectors();
+ const b=s.sector&&fitSector(s.sector);
+ if(b){b.extend({lat:s.lat,lng:s.lng});map.fitBounds(b,40);}else{map.setZoom(15);map.panTo({lat:s.lat,lng:s.lng});}
+ info.setContent(schoolPopup(s));info.open({map,anchor:schoolMarkers[id]});
+}
+function renderList(){
+ const root=document.getElementById('schoolList');root.innerHTML='';
+ const groups=[['paris','Public bilingual schools in Paris'],['intl','Public international sections in the suburbs'],['private','Private schools — sous contrat / status to check']];
+ for(const [cat,title] of groups){
+  if(!visible(cat))continue;
+  const arr=schools.filter(s=>s.cat===cat);
+  const h=document.createElement('div');h.className='group-title';h.innerHTML=`<span>${title}</span><span>${arr.length}</span>`;root.appendChild(h);
+  for(const s of arr){
+   const d=document.createElement('div');d.className='school';d.dataset.id=s.id;
+   const tag=cat==='paris'?'public':cat==='intl'?'intl':'private';
+   const x=indicators[s.uai]||{};
+   const rep=x.rep_plus?'<span class="tag rep">REP+</span>':x.rep?'<span class="tag rep">REP</span>':'';
+   d.innerHTML=`<h3>${esc(s.name)} <span class="tag ${tag}">${cat==='paris'?'PUBLIC':cat==='intl'?'SECTION':'PRIVATE'}</span>${rep}</h3><div class="meta">${esc(s.city)} · ${esc(s.address)}</div><p><b>${esc(s.kind)}</b></p>${statsHtml(s)}<p>${esc(s.note)}</p><button data-id="${s.id}">${s.sector?'Show school and catchment area':'Show on map'}</button> <a target="_blank" rel="noopener" href="${s.src}">Source</a>`;
+   d.querySelector('button').addEventListener('click',()=>showSchool(s.id));root.appendChild(d);
+  }
+ }
+}
+function applyFilters(){
+ renderList();
+ for(const s of schools){const m=schoolMarkers[s.id];if(m)m.map=visible(s.cat)?map:null;}
+}
+['showParis','showIntl','showPrivate'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
+document.getElementById('showSectors').addEventListener('change',refreshSectors);
+renderList();
+
+async function initMap(){
+ const {Map,InfoWindow}=await google.maps.importLibrary('maps');
+ const {AdvancedMarkerElement,PinElement}=await google.maps.importLibrary('marker');
+ map=new Map(document.getElementById('map'),{center:{lat:48.8566,lng:2.3522},zoom:11,mapId:'DEMO_MAP_ID',streetViewControl:true,mapTypeControl:true,fullscreenControl:true,clickableIcons:false});
+ info=new InfoWindow();
+ info.addListener('closeclick',()=>{selectedSector=null;refreshSectors();document.querySelectorAll('.school.active').forEach(el=>el.classList.remove('active'));});
+ for(const s of schools){
+  const pin=new PinElement({background:colors[s.cat],borderColor:'#ffffff',glyphColor:'#ffffff',scale:.9});
+  const m=new AdvancedMarkerElement({map:visible(s.cat)?map:null,position:{lat:s.lat,lng:s.lng},title:s.name,content:pin,gmpClickable:true});
+  m.addEventListener('gmp-click',()=>showSchool(s.id));
+  schoolMarkers[s.id]=m;
+ }
+ refreshSectors();
+ map.data.addListener('click',e=>{
+  const f=e.feature,g=k=>f.getProperty(k);
+  const names=[g('lib_etab_1'),g('lib_etab_2'),g('lib_etab_3'),g('lib_etab_4')].filter(Boolean).join(', ');
+  info.setContent(`<b>Elementary catchment area · 2026–2027</b><br>${esc(g('libelle')||'')}<br>${esc(names)}`);
+  info.setPosition(e.latLng);info.open({map});
+ });
+ loadSectors();
+}
+
+/* Official Paris ArcGIS service: elementary school sectors, 2026–27 (ID_PROJET 4913).
+   Query only sectors whose associated school fields contain one of the listed English-bilingual schools. */
+function loadSectors(){
+ const keys=schools.filter(s=>s.sector).map(s=>s.sector);
+ const cols=['lib_etab_1','lib_etab_2','lib_etab_3','lib_etab_4'];
+ const ors=[];
+ for(const n of keys) for(const c of cols) ors.push(`${c} LIKE '%${n}%'`);
+ const where='id_projet=4913 AND ('+ors.join(' OR ')+')';
+ const queryUrl='https://capgeo2.paris.fr/opendata/rest/services/DASCO/DASCO_Secteurs_Scol_Secteurs/MapServer/1/query?'+new URLSearchParams({where,outFields:'*',returnGeometry:'true',outSR:'4326',f:'geojson'}).toString();
+ fetch(queryUrl).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(gj=>{
+  if(!gj.features)throw new Error(gj.error?.message||'GeoJSON unavailable');
+  sectorFeatures=gj.features;
+  map.data.addGeoJson(gj,{idPropertyName:'objectid'});
+  document.getElementById('sectorStatus').textContent=`Catchment areas loaded: ${sectorFeatures.length}. Source: DASCO / Ville de Paris, ID_PROJET 4913 (2026–2027).`;
+ }).catch(err=>{
+  document.getElementById('sectorStatus').innerHTML='Could not load the Paris Data catchment layer. <a target="_blank" href="https://capgeo2.paris.fr/opendata/rest/services/DASCO/DASCO_Secteurs_Scol_Secteurs/MapServer/1">Open the official layer</a>. Reason: '+esc(err.message);
+ });
+}
+
+/* Apartment-address search: Base Adresse Nationale (works from a local file, no key), then point-in-polygon against the loaded sectors. */
+async function geocode(q){
+ const u='https://api-adresse.data.gouv.fr/search/?'+new URLSearchParams({q,limit:'1',lat:'48.8566',lon:'2.3522'});
+ const r=await fetch(u);if(!r.ok)throw new Error('address service unavailable');
+ const a=await r.json();if(!a.features||!a.features.length)throw new Error('address not found');
+ const f=a.features[0];return {lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],label:f.properties.label};
+}
+let suggestTimer=null;
+document.getElementById('address').addEventListener('input',e=>{
+ clearTimeout(suggestTimer);const q=e.target.value.trim();if(q.length<4)return;
+ suggestTimer=setTimeout(async()=>{
+  try{
+   const r=await fetch('https://api-adresse.data.gouv.fr/search/?'+new URLSearchParams({q,limit:'6',autocomplete:'1',lat:'48.8566',lon:'2.3522'}));
+   const a=await r.json();
+   document.getElementById('addrList').innerHTML=(a.features||[]).map(f=>`<option value="${esc(f.properties.label)}">`).join('');
+  }catch(e){}
+ },250);
+});
+document.getElementById('searchBtn').addEventListener('click',checkAddress);
+document.getElementById('address').addEventListener('keydown',e=>{if(e.key==='Enter')checkAddress();});
+/* Map marker is best-effort: the sector check must work even if Google Maps failed to load. */
+async function showAddressOnMap(p){
+ if(!map)return;
+ try{
+  const {AdvancedMarkerElement,PinElement}=await google.maps.importLibrary('marker');
+  if(addressMarker)addressMarker.map=null;
+  const pin=new PinElement({background:'#facc15',borderColor:'#111827',glyphColor:'#111827',scale:1.1});
+  addressMarker=new AdvancedMarkerElement({map,position:{lat:p.lat,lng:p.lng},title:'Address checked',content:pin,zIndex:1000});
+  selectedSector=null;refreshSectors();
+  map.setZoom(15);map.panTo({lat:p.lat,lng:p.lng});
+  info.setContent('Address checked: '+esc(p.label));info.open({map,anchor:addressMarker});
+ }catch(e){}
+}
+async function checkAddress(){
+ const q=document.getElementById('address').value.trim();if(!q)return;
+ const box=document.getElementById('result');box.style.display='block';box.textContent='Looking up the address…';
+ try{
+  const p=await geocode(q);
+  if(!sectorFeatures.length){showAddressOnMap(p);box.textContent='Address found ('+p.label+'), but the catchment layer has not loaded yet.';return;}
+  const pt=turf.point([p.lng,p.lat]);
+  const hits=sectorFeatures.filter(f=>{try{return turf.booleanPointInPolygon(pt,f);}catch(e){return false;}});
+  addressHits=new Set(hits.map(f=>(f.properties||{}).objectid));
+  showAddressOnMap(p);
+  if(!hits.length){box.innerHTML='<b>'+esc(p.label)+'</b><br>This address is not in the catchment area of any of the bilingual schools shown.<br>Your child can still attend another public school; only the catchment areas of the English-bilingual schools are shown here.';return;}
+  const details=hits.map(f=>{const x=f.properties||{};return [x.lib_etab_1,x.lib_etab_2,x.lib_etab_3,x.lib_etab_4].filter(Boolean).join(', ');});
+  box.innerHTML='<b>'+esc(p.label)+'</b><br>This address is inside the catchment area of:<br>'+details.map(esc).join('<br>')+'<br><span class="small">Final confirmation comes from the mairie / service des affaires scolaires for your address and entry year.</span>';
+ }catch(e){box.textContent='Could not look up the address: '+e.message;}
+}
+
+(()=>{
+ const s=document.createElement('script');
+ s.src='https://maps.googleapis.com/maps/api/js?'+new URLSearchParams({key:GOOGLE_MAPS_KEY,v:'weekly',loading:'async',callback:'initMap',language:'en',region:'FR'});
+ s.async=true;s.onerror=()=>showMapError('<b>Could not load Google Maps.</b> No network, or the script is blocked.');
+ document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>
