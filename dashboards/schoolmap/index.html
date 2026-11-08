@@ -51,7 +51,11 @@ aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid var(--li
 .tag.paris{background:#e6f2fb;color:#125b91}.tag.intl{background:#f1eafb;color:#67379b}.tag.private{background:#fff0df;color:#91510e}.tag.rep{background:#fdecec;color:#8a2323}
 .small{font-size:11px;color:var(--muted)}
 #result{display:none;padding:9px 10px;border:1px solid #b7d7ed;background:#eff8ff;border-radius:8px;margin:8px 0;font-size:12px}
-@media(max-width:800px){.bar .in{padding:0 14px}main{display:flex;flex-direction:column;height:auto}#map{order:0;height:52vh;min-height:350px}aside{order:1;max-height:none;border-right:0}header{padding:14px}}
+/* Phone: aside dissolves so the search and filters sit above the map, details and notes below it. */
+@media(max-width:800px){.bar .in{padding:0 14px}main{display:flex;flex-direction:column;height:auto;background:#fff}aside{display:contents}
+ aside>*{margin-left:14px!important;margin-right:14px!important}
+ .search{order:1;margin-top:12px}#result{order:2}#filters{order:3}#map{order:4;height:60vh;min-height:350px}#mapError{order:5}#detail{order:6}#sectorStatus{order:7}.method{order:8}
+ header{padding:14px}}
 </style>
 </head>
 <body>
@@ -72,7 +76,7 @@ aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid var(--li
   <div id="mapError" class="notice error" style="display:none"></div>
   <div id="detail" class="empty">Click a pin on the map to see the school here.</div>
   <div id="sectorStatus" class="status">Loading official Paris catchment boundaries…</div>
-  <div class="small" style="padding:12px 2px 24px">
+  <div class="small method" style="padding:12px 2px 24px">
     <b>Method.</b> Included: schools where both CP and an English programme are confirmed (a bilingual programme or a British/American international section). Ordinary English lessons (LV1) do not count as a bilingual programme. The suburbs (92, 93, 94 and the part of 78 near Paris) were searched in November 2026 for public bilingual programmes and private bilingual schools under contract: none was found in 92, 93 or 94 beyond the international sections; private schools without a state contract (hors contrat) are not included. Check places, campus and admission rules for 2026–2027 before applying.<br><br>
     <b>Indicators.</b> IPS and REP: data.education.gouv.fr (IPS des écoles, 2024–2025). Pupils and classes: Effectifs d’élèves par école, 2025.<br><br>
     <b>Locations.</b> School coordinates and addresses come from the official Annuaire de l’éducation (data.education.gouv.fr, November 2026). Apartment addresses are looked up with the Base Adresse Nationale (api-adresse.data.gouv.fr). Catchment areas: DASCO / Ville de Paris.
