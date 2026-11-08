@@ -17,28 +17,41 @@ main{display:grid;grid-template-columns:400px 1fr;height:calc(100vh - 138px);min
 aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid var(--line)}
 #map{height:100%;min-height:560px}
 .search{display:flex;gap:7px;margin-bottom:10px}.search input{min-width:0;flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}.search button{border:0;background:#17212b;color:#fff;border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.filters label{display:flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid var(--line);border-radius:20px;font-size:12px}
-.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:6px 0 12px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
+.filters{border:1px solid var(--line);border-radius:9px;margin:10px 0 12px}
+.frow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-top:1px solid var(--line);font-size:13px}
+.frow:first-child{border-top:0}
+.frow label{display:flex;align-items:center;gap:8px;flex:1;cursor:pointer}
+.frow .count{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
+.dot.none{background:none;border:1.5px dashed #4c9bd1;border-radius:2px}
+.info{flex:none;width:20px;height:20px;border-radius:50%;border:1px solid #b9c4d0;background:#fff;color:var(--muted);font:600 11px/18px Georgia,serif;font-style:italic;text-align:center;cursor:pointer;padding:0}
+.info:hover,.info[aria-expanded="true"]{border-color:var(--ink);color:var(--ink)}
+.explain{display:none;font-size:12px;color:#334155;background:#f7f9fb;padding:8px 10px 9px;border-top:1px dashed var(--line);line-height:1.5}
+.explain.open{display:block}
+.slider{padding:10px 10px 12px;border-top:1px solid var(--line)}
+.slider .head{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px}
+.slider .head span{flex:1}
+.slider input[type=range]{width:100%;accent-color:#17212b}
+.slider .scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
 .notice{background:#fff8e7;border:1px solid #f0dca9;border-radius:8px;padding:9px 10px;margin:10px 0;color:#684d13;font-size:12px}
 .notice.error{background:#fdecec;border-color:#f1c0c0;color:#7a1f1f}
 .status{font-size:12px;color:var(--muted);padding:7px 0}
-.group-title{font-size:13px;font-weight:750;margin:18px 0 7px;display:flex;justify-content:space-between}
-.school{border:1px solid var(--line);border-radius:9px;padding:10px;margin:7px 0;background:#fff}
-.school.active{border-color:#17212b;box-shadow:0 0 0 1px #17212b}
-.school h3{font-size:14px;margin:0 0 3px}.school .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
-.school p{font-size:12px;margin:4px 0 7px}.school a{font-size:12px;color:#145e9a;text-decoration:none;margin-right:8px}.school a:hover{text-decoration:underline}
-.school button{background:#eef4fa;color:#174c76;border:1px solid #d5e3ef;border-radius:6px;padding:5px 8px;font-size:12px;cursor:pointer}
-.stats{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12px;background:#f7f9fb;border-radius:7px;padding:7px 9px;margin:6px 0 8px}
-.stats dt{color:var(--muted)}.stats dd{margin:0;font-variant-numeric:tabular-nums}
+#detail{border:1px solid var(--line);border-radius:9px;padding:12px;margin:10px 0;background:#fff}
+#detail.empty{color:var(--muted);font-size:12px;border-style:dashed}
+#detail h3{font-size:15px;margin:0 0 3px;padding-right:26px}#detail .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+#detail p{font-size:12px;margin:4px 0 7px}#detail a{font-size:12px;color:#145e9a;text-decoration:none}#detail a:hover{text-decoration:underline}
+#detail .close{float:right;border:0;background:none;font-size:18px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px}
+.stats{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px;background:#f7f9fb;border-radius:7px;padding:8px 9px;margin:8px 0}
+.stats dt{color:var(--muted);display:flex;align-items:flex-start;gap:5px}.stats dd{margin:0;font-variant-numeric:tabular-nums}
+.stats .info{width:16px;height:16px;font-size:10px;line-height:14px}
+.stats .explain{grid-column:1/-1;border:0;border-radius:6px;background:#fff;margin:2px 0}
 .ips-bar{display:inline-block;vertical-align:middle;width:70px;height:6px;border-radius:3px;background:#e5eaf0;margin-left:6px;position:relative;overflow:hidden}
 .ips-bar i{position:absolute;left:0;top:0;bottom:0;background:#17212b;border-radius:3px}
-.tag{font-size:10px;font-weight:700;border-radius:20px;padding:2px 6px;background:#edf2f7;color:#405366;margin-left:5px}
-.tag.public{background:#e6f2fb;color:#125b91}.tag.intl{background:#f1eafb;color:#67379b}.tag.private{background:#fff0df;color:#91510e}.tag.rep{background:#fdecec;color:#8a2323}
+.tag{font-size:10px;font-weight:700;border-radius:20px;padding:2px 6px;background:#edf2f7;color:#405366;margin-left:5px;white-space:nowrap}
+.tag.paris{background:#e6f2fb;color:#125b91}.tag.intl{background:#f1eafb;color:#67379b}.tag.private{background:#fff0df;color:#91510e}.tag.rep{background:#fdecec;color:#8a2323}
 .small{font-size:11px;color:var(--muted)}
 #result{display:none;padding:9px 10px;border:1px solid #b7d7ed;background:#eff8ff;border-radius:8px;margin:8px 0;font-size:12px}
-.gm-style .gm-style-iw{font-size:13px;line-height:1.4}.gm-style .gm-style-iw a{color:#145e9a}
-.gm-style .gm-style-iw .stats{margin:6px 0 4px}
-@media(max-width:800px){.bar .in{padding:0 14px}main{display:flex;flex-direction:column;height:auto}#map{order:0;height:48vh;min-height:350px}aside{order:1;max-height:none;border-right:0}.school{margin:6px 0}header{padding:14px}}
+@media(max-width:800px){.bar .in{padding:0 14px}main{display:flex;flex-direction:column;height:auto}#map{order:0;height:52vh;min-height:350px}aside{order:1;max-height:none;border-right:0}header{padding:14px}}
 </style>
 </head>
 <body>
@@ -55,25 +68,14 @@ aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid var(--li
     <button id="searchBtn">Check</button>
   </div>
   <div id="result"></div>
-  <div class="filters">
-    <label><input type="checkbox" id="showParis" checked> Public Paris</label>
-    <label><input type="checkbox" id="showIntl" checked> Public international</label>
-    <label><input type="checkbox" id="showPrivate" checked> Private (sous contrat)</label>
-    <label><input type="checkbox" id="showSectors"> All Paris catchment areas</label>
-  </div>
-  <div class="legend">
-    <span><i class="dot" style="background:var(--public)"></i>Public, Paris</span>
-    <span><i class="dot" style="background:var(--intl)"></i>International sections</span>
-    <span><i class="dot" style="background:var(--private)"></i>Private sous contrat</span>
-  </div>
+  <div class="filters" id="filters"></div>
   <div id="mapError" class="notice error" style="display:none"></div>
-  <div class="notice"><b>How to read the map.</b> Click a blue pin (or “Show on map”) to see that school’s catchment area (secteur scolaire) for 2026–2027. Public Paris schools admit by home address, not by distance. International sections admit by application and language assessment, and private schools by their own process, so they have no catchment area. Suburban catchment areas are not shown.</div>
+  <div id="detail" class="empty">Click a pin on the map to see the school here.</div>
   <div id="sectorStatus" class="status">Loading official Paris catchment boundaries…</div>
-  <div id="schoolList"></div>
   <div class="small" style="padding:12px 2px 24px">
     <b>Method.</b> Included: schools where both CP and an English programme are confirmed (a bilingual programme or a British/American international section). Ordinary English lessons (LV1) do not count as a bilingual programme. The suburbs (92, 93, 94 and the part of 78 near Paris) were searched in November 2026 for public bilingual programmes and private bilingual schools under contract: none was found in 92, 93 or 94 beyond the international sections; private schools without a state contract (hors contrat) are not included. Check places, campus and admission rules for 2026–2027 before applying.<br><br>
-    <b>Indicators.</b> IPS (indice de position sociale) is the ministry’s index of pupils’ family social background, 2024–2025: national average about 106; higher means more advantaged families. It is not a measure of teaching quality. Pupils and classes are for the 2025 school year. REP / REP+ means the school is in the priority education network. Source: data.education.gouv.fr (IPS des écoles; Effectifs d’élèves par école).<br><br>
-    <b>Locations.</b> School coordinates and addresses come from the official Annuaire de l’éducation (data.education.gouv.fr, November 2026), which also corrected several addresses. Apartment addresses are looked up with the Base Adresse Nationale (api-adresse.data.gouv.fr). Catchment areas: DASCO / Ville de Paris.
+    <b>Indicators.</b> IPS and REP: data.education.gouv.fr (IPS des écoles, 2024–2025). Pupils and classes: Effectifs d’élèves par école, 2025.<br><br>
+    <b>Locations.</b> School coordinates and addresses come from the official Annuaire de l’éducation (data.education.gouv.fr, November 2026). Apartment addresses are looked up with the Base Adresse Nationale (api-adresse.data.gouv.fr). Catchment areas: DASCO / Ville de Paris.
   </div>
 </aside>
 <div id="map"></div>
@@ -133,34 +135,98 @@ const schools = [
 const indicators = /*INDICATORS*/{"0750818G":{"uai":"0750818G","ips":129.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":97.0,"classes":5.0,"elem":97.0,"cp":19.0,"rep":false,"rep_plus":false},"0750947X":{"uai":"0750947X","ips":122.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":92.0,"classes":5.0,"elem":92.0,"cp":20.0,"rep":false,"rep_plus":false},"0751237M":{"uai":"0751237M","ips":135.4,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":125.0,"classes":6.0,"elem":125.0,"cp":31.0,"rep":false,"rep_plus":false},"0751136C":{"uai":"0751136C","ips":99.4,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":194.0,"classes":10.0,"elem":194.0,"cp":48.0,"rep":false,"rep_plus":false},"0750938M":{"uai":"0750938M","ips":94.2,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":195.0,"classes":12.0,"elem":195.0,"cp":40.0,"rep":true,"rep_plus":false},"0750813B":{"uai":"0750813B","ips":118.9,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":266.0,"classes":11.0,"elem":266.0,"cp":58.0,"rep":false,"rep_plus":false},"0751028K":{"uai":"0751028K","ips":130.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":268.0,"classes":11.0,"elem":268.0,"cp":54.0,"rep":false,"rep_plus":false},"0751094G":{"uai":"0751094G","ips":94.7,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":148.0,"classes":10.0,"elem":148.0,"cp":32.0,"rep":true,"rep_plus":false},"0751376N":{"uai":"0751376N","ips":null,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":247.0,"classes":11.0,"elem":154.0,"cp":36.0,"rep":false,"rep_plus":false},"0751302H":{"uai":"0751302H","ips":122.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":196.0,"classes":9.0,"elem":86.0,"cp":11.0,"rep":false,"rep_plus":false},"0750995Z":{"uai":"0750995Z","ips":124.1,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":249.0,"classes":10.0,"elem":148.0,"cp":33.0,"rep":false,"rep_plus":false},"0750857Z":{"uai":"0750857Z","ips":147.8,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":252.0,"classes":12.0,"elem":183.0,"cp":33.0,"rep":false,"rep_plus":false},"0751160D":{"uai":"0751160D","ips":133.1,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":327.0,"classes":15.0,"elem":200.0,"cp":41.0,"rep":false,"rep_plus":false},"0755710Z":{"uai":"0755710Z","ips":110.9,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":214.0,"classes":9.0,"elem":116.0,"cp":15.0,"rep":false,"rep_plus":false},"0920395E":{"uai":"0920395E","ips":124.9,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":444.0,"classes":18.0,"elem":444.0,"cp":82.0,"rep":false,"rep_plus":false},"0922475R":{"uai":"0922475R","ips":138.6,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":170.0,"classes":8.0,"elem":170.0,"cp":28.0,"rep":false,"rep_plus":false},"0921708G":{"uai":"0921708G","ips":88.1,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":217.0,"classes":13.0,"elem":217.0,"cp":44.0,"rep":true,"rep_plus":false},"0780859K":{"uai":"0780859K","ips":140.9,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":260.0,"classes":10.0,"elem":260.0,"cp":43.0,"rep":false,"rep_plus":false},"0781966N":{"uai":"0781966N","ips":143.7,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":297.0,"classes":12.0,"elem":297.0,"cp":51.0,"rep":false,"rep_plus":false},"0782251Y":{"uai":"0782251Y","eff_year":"2025","eleves":137.0,"classes":6.0,"elem":0,"cp":0.0,"rep":false,"rep_plus":false},"0781129D":{"uai":"0781129D","ips":148.7,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":541.0,"classes":21.0,"elem":516.0,"cp":74.0,"rep":false,"rep_plus":false},"0920721J":{"uai":"0920721J","ips":135.6,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":245.0,"classes":11.0,"elem":245.0,"cp":40.0,"rep":false,"rep_plus":false},"0951156R":{"uai":"0951156R","ips":133.6,"ips_year":"2024-2025","ips_dep":104.9,"ips_nat":105.8,"dep":"VAL-D'OISE","eff_year":"2025","eleves":264.0,"classes":10.0,"elem":264.0,"cp":44.0,"rep":false,"rep_plus":false},"0921922P":{"uai":"0921922P","ips":117.1,"ips_year":"2024-2025","ips_dep":127.0,"ips_nat":105.8,"dep":"HAUTS-DE-SEINE","eff_year":"2025","eleves":333.0,"classes":16.0,"elem":333.0,"cp":61.0,"rep":false,"rep_plus":false},"0781119T":{"uai":"0781119T","ips":142.0,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":372.0,"classes":15.0,"elem":372.0,"cp":63.0,"rep":false,"rep_plus":false},"0770381W":{"uai":"0770381W","ips":142.0,"ips_year":"2024-2025","ips_dep":108.1,"ips_nat":105.8,"dep":"SEINE-ET-MARNE","eff_year":"2025","eleves":231.0,"classes":9.0,"elem":231.0,"cp":39.0,"rep":false,"rep_plus":false},"0752203M":{"uai":"0752203M","ips":151.2,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":224.0,"classes":8.0,"elem":144.0,"cp":32.0,"rep":false,"rep_plus":false},"0752820H":{"uai":"0752820H","ips":153.0,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":877.0,"classes":39.0,"elem":666.0,"cp":119.0,"rep":false,"rep_plus":false},"0750179M":{"uai":"0750179M","ips":null,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":371.0,"classes":16.0,"elem":323.0,"cp":100.0,"rep":false,"rep_plus":false},"0750187W":{"uai":"0750187W","eff_year":"2025","eleves":193.0,"classes":8.0,"elem":99.0,"cp":48.0,"rep":false,"rep_plus":false},"0750141W":{"uai":"0750141W","ips":153.3,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":306.0,"classes":11.0,"elem":276.0,"cp":50.0,"rep":false,"rep_plus":false},"0750154K":{"uai":"0750154K","ips":155.1,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":305.0,"classes":7.0,"elem":239.0,"cp":48.0,"rep":false,"rep_plus":false},"0754748D":{"uai":"0754748D","ips":148.6,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":163.0,"classes":9.0,"elem":127.0,"cp":24.0,"rep":false,"rep_plus":false},"0781186R":{"uai":"0781186R","ips":141.4,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":181.0,"classes":8.0,"elem":181.0,"cp":26.0,"rep":false,"rep_plus":false},"0950816W":{"uai":"0950816W","ips":91.8,"ips_year":"2024-2025","ips_dep":104.9,"ips_nat":105.8,"dep":"VAL-D'OISE","eff_year":"2025","eleves":296.0,"classes":17.0,"elem":296.0,"cp":56.0,"rep":true,"rep_plus":false},"0750206S":{"uai":"0750206S","ips":158.2,"ips_year":"2024-2025","ips_dep":126.9,"ips_nat":105.8,"dep":"PARIS","eff_year":"2025","eleves":387.0,"classes":16.0,"elem":387.0,"cp":0.0,"rep":false,"rep_plus":false},"0780120G":{"uai":"0780120G","ips":150.0,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":565.0,"classes":28.0,"elem":414.0,"cp":72.0,"rep":false,"rep_plus":false},"0780129S":{"uai":"0780129S","ips":150.9,"ips_year":"2024-2025","ips_dep":122.1,"ips_nat":105.8,"dep":"YVELINES","eff_year":"2025","eleves":562.0,"classes":21.0,"elem":411.0,"cp":68.0,"rep":false,"rep_plus":false}};
 
 const colors={paris:'#1769aa',intl:'#7b4ab5',private:'#b76a19'};
-let map, info, sectorFeatures=[], schoolMarkers={}, addressMarker=null;
-let selectedSector=null, addressHits=new Set();
+const CATS=[
+ {cat:'paris',label:'Public Paris',explain:'Free state schools run by the City of Paris with a French–English bilingual programme: the French national curriculum, with part of the lessons taught in English. Admission is strictly by home address (the school’s catchment area); there is no test and no fee. Compared with an international section, the English is lighter but open to every child in the area. Click a blue pin to see its catchment area.'},
+ {cat:'intl',label:'Public international',explain:'Free state schools with a British or American international section: several extra hours a week of English language and literature (often history too), taught by native teachers on top of the French curriculum. Admission by application and an English test, from any address; aimed at children who are already bilingual. The parents’ association running the section usually charges an annual fee. More demanding than Public Paris; no catchment area.'},
+ {cat:'private',label:'Private (sous contrat)',explain:'Private schools under contract with the state: they follow the national curriculum and the state pays the teachers, so fees are moderate compared with fully private international schools. Each school runs its own admission; there is no catchment area. How much is taught in English varies a lot from school to school, so check the CP hours. Schools without a state contract (hors contrat) are not shown.'}
+];
+const IPS_EXPLAIN='IPS (indice de position sociale) is the ministry’s index of the social background of a school’s pupils, computed from their parents’ occupations. National average about 106 (2024–2025); most schools fall between 80 and 150. Higher means more advantaged families. It describes who attends the school, not how well it teaches, although it correlates with test results. Schools without a published IPS stay visible whatever the filter.';
+const SECTOR_EXPLAIN='Each Paris public school takes children from a fixed list of streets (its secteur scolaire). Tick this to see the catchment areas of all bilingual Paris schools at once; otherwise a blue pin shows only its own area.';
+
+let map, sectorFeatures=[], schoolMarkers={}, schoolPins={}, addressMarker=null;
+let selectedId=null, selectedSector=null, addressHits=new Set();
+const show={paris:true,intl:true,private:true};
+let minIps=80;
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function visible(cat){return cat==='paris'?document.getElementById('showParis').checked:cat==='intl'?document.getElementById('showIntl').checked:document.getElementById('showPrivate').checked;}
 function fmt(n,d=0){return n==null?'—':n.toLocaleString('en-GB',{maximumFractionDigits:d,minimumFractionDigits:d});}
+function visible(s){const x=indicators[s.uai];return show[s.cat]&&(!x||x.ips==null||x.ips>=minIps);}
+function infoBtn(id){return `<button class="info" type="button" aria-label="What does this mean?" aria-expanded="false" data-explain="${id}">i</button>`;}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('.info');if(!b)return;
+ e.preventDefault();e.stopPropagation();
+ const el=document.getElementById(b.dataset.explain);if(!el)return;
+ const open=!el.classList.contains('open');el.classList.toggle('open',open);b.setAttribute('aria-expanded',open);
+});
+
+function buildFilters(){
+ const root=document.getElementById('filters');
+ const row=(inner,expId,text)=>`<div class="frow">${inner}${infoBtn(expId)}</div><div class="explain" id="${expId}">${text}</div>`;
+ let h='';
+ for(const c of CATS){
+  h+=row(`<label><input type="checkbox" data-cat="${c.cat}" checked><i class="dot" style="background:${colors[c.cat]}"></i>${c.label}</label><span class="count" id="count-${c.cat}"></span>`,'exp-'+c.cat,c.explain);
+ }
+ h+=row(`<label><input type="checkbox" id="showSectors"><i class="dot none"></i>All Paris catchment areas</label>`,'exp-sectors',SECTOR_EXPLAIN);
+ h+=`<div class="slider"><div class="head"><span>Social index (IPS) from <b id="ipsVal"></b></span>${infoBtn('exp-ips-filter')}</div><div class="explain" id="exp-ips-filter" style="margin:0 -10px 8px">${IPS_EXPLAIN}</div><input type="range" id="ipsMin" min="80" max="160" step="1" value="80" aria-label="Minimum social index"><div class="scale"><span>80</span><span>France avg ≈ 106</span><span>160</span></div></div>`;
+ root.innerHTML=h;
+ root.querySelectorAll('input[data-cat]').forEach(i=>i.addEventListener('change',()=>{show[i.dataset.cat]=i.checked;applyFilters();}));
+ document.getElementById('showSectors').addEventListener('change',refreshSectors);
+ const r=document.getElementById('ipsMin');
+ r.addEventListener('input',()=>{minIps=+r.value;applyFilters();});
+ applyFilters();
+}
+function applyFilters(){
+ document.getElementById('ipsVal').textContent=minIps<=80?'any':minIps;
+ for(const c of CATS){
+  const all=schools.filter(s=>s.cat===c.cat),vis=all.filter(visible);
+  document.getElementById('count-'+c.cat).textContent=vis.length===all.length?all.length:`${vis.length} of ${all.length}`;
+ }
+ for(const s of schools){const m=schoolMarkers[s.id];if(m)m.map=visible(s)?map:null;}
+}
+
 function statsHtml(s){
  const x=indicators[s.uai];if(!x)return '';
  const rows=[];
  if(x.ips!=null){
   const w=Math.max(0,Math.min(100,(x.ips-60)/(160-60)*100));
-  rows.push(['Social index (IPS)',`<b>${fmt(x.ips,1)}</b><span class="ips-bar" title="scale 60–160"><i style="width:${w}%"></i></span><br><span class="small">dept ${fmt(x.ips_dep,1)} · France ${fmt(x.ips_nat,1)} · ${esc(x.ips_year)}</span>`]);
- }else rows.push(['Social index (IPS)','<span class="small">not published</span>']);
+  rows.push([`Social index (IPS)${infoBtn('exp-ips-detail')}`,`<b>${fmt(x.ips,1)}</b><span class="ips-bar" title="scale 60–160"><i style="width:${w}%"></i></span><br><span class="small">dept ${fmt(x.ips_dep,1)} · France ${fmt(x.ips_nat,1)} · ${esc(x.ips_year)}</span>`]);
+ }else rows.push([`Social index (IPS)${infoBtn('exp-ips-detail')}`,'<span class="small">not published</span>']);
+ let h=rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+`<div class="explain" id="exp-ips-detail">${IPS_EXPLAIN}</div>`;
  if(x.eleves!=null){
-  rows.push(['Pupils',`${fmt(x.eleves)} in ${fmt(x.classes)} classes · ${fmt(x.classes?x.eleves/x.classes:null,1)} per class`]);
-  rows.push(['CP pupils',`${fmt(x.cp)} <span class="small">(${esc(x.eff_year)})</span>`]);
+  h+=`<dt>Pupils</dt><dd>${fmt(x.eleves)} in ${fmt(x.classes)} classes · ${fmt(x.classes?x.eleves/x.classes:null,1)} per class</dd>`;
+  h+=`<dt>CP pupils</dt><dd>${fmt(x.cp)} <span class="small">(${esc(x.eff_year)})</span></dd>`;
  }
- if(x.rep||x.rep_plus)rows.push(['Priority education',x.rep_plus?'REP+':'REP']);
- return '<dl class="stats">'+rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')+'</dl>';
+ if(x.rep||x.rep_plus)h+=`<dt>Priority education</dt><dd>${x.rep_plus?'REP+':'REP'}</dd>`;
+ return '<dl class="stats">'+h+'</dl>';
 }
 function zoneLine(s){
- if(s.cat==='paris')return '';
- return `<span class="small">${s.cat==='intl'?'No catchment area: admission by application and language assessment.':'Private school: no catchment area.'}</span><br>`;
+ if(s.cat==='paris')return '<p class="small">Its catchment area is highlighted on the map.</p>';
+ return `<p class="small">${s.cat==='intl'?'No catchment area: admission by application and language assessment.':'Private school: no catchment area.'}</p>`;
 }
-function schoolPopup(s){return `<b>${esc(s.name)}</b><br>${esc(s.address)}<br>${esc(s.kind)}${statsHtml(s)}${esc(s.note)}<br>${zoneLine(s)}<a target="_blank" rel="noopener" href="${s.src}">Source / details</a>`;}
-function showMapError(html){const el=document.getElementById('mapError');el.innerHTML=html;el.style.display='block';}
-window.gm_authFailure=()=>showMapError('<b>Google Maps rejected the key.</b> Most likely the Maps JavaScript API is not enabled in the key’s project: <a target="_blank" rel="noopener" href="https://console.cloud.google.com/apis/library/maps-backend.googleapis.com">enable it</a>. If it is, check the key restrictions: an HTTP-referrer restriction will not work for a local file. The school list and the address check work without the map.');
+function renderDetail(s){
+ const box=document.getElementById('detail');box.classList.remove('empty');
+ const x=indicators[s.uai]||{};
+ const rep=x.rep_plus?'<span class="tag rep">REP+</span>':x.rep?'<span class="tag rep">REP</span>':'';
+ const label={paris:'PUBLIC PARIS',intl:'SECTION',private:'PRIVATE'}[s.cat];
+ box.innerHTML=`<button class="close" aria-label="Close">×</button><h3>${esc(s.name)} <span class="tag ${s.cat}">${label}</span>${rep}</h3><div class="meta">${esc(s.city)} · ${esc(s.address)}</div><p><b>${esc(s.kind)}</b></p>${statsHtml(s)}<p>${esc(s.note)}</p>${zoneLine(s)}<a target="_blank" rel="noopener" href="${s.src}">Source / details</a>`;
+ box.querySelector('.close').addEventListener('click',clearSelection);
+}
+function renderSectorDetail(f){
+ const box=document.getElementById('detail');box.classList.remove('empty');
+ const g=k=>f.getProperty(k);
+ const names=[g('lib_etab_1'),g('lib_etab_2'),g('lib_etab_3'),g('lib_etab_4')].filter(Boolean).join(', ');
+ box.innerHTML=`<button class="close" aria-label="Close">×</button><h3>Elementary catchment area · 2026–2027</h3><div class="meta">${esc(g('libelle')||'')}</div><p>Schools for this area: ${esc(names)}</p>`;
+ box.querySelector('.close').addEventListener('click',clearSelection);
+}
+function setPinSize(id,big){try{const p=schoolPins[id];if(p)p.scale=big?1.35:.9;const m=schoolMarkers[id];if(m)m.zIndex=big?999:null;}catch(e){}}
+function clearSelection(){
+ if(selectedId)setPinSize(selectedId,false);
+ selectedId=null;selectedSector=null;refreshSectors();
+ const box=document.getElementById('detail');box.className='empty';box.id='detail';box.textContent='Click a pin on the map to see the school here.';
+}
+function showGlobalError(html){const el=document.getElementById('mapError');el.innerHTML=html;el.style.display='block';}
+window.gm_authFailure=()=>showGlobalError('<b>Google Maps rejected the key.</b> Most likely the Maps JavaScript API is not enabled in the key’s project, or the key is restricted to another website. The address check works without the map.');
 
-function sectorMatches(f,key){return ['lib_etab_1','lib_etab_2','lib_etab_3','lib_etab_4'].some(k=>String(f.getProperty?f.getProperty(k)||'':(f.properties||{})[k]||'').includes(key));}
+function sectorMatches(f,key){return ['lib_etab_1','lib_etab_2','lib_etab_3','lib_etab_4'].some(k=>String(f.getProperty(k)||'').includes(key));}
 function refreshSectors(){
  if(!map)return;
  const all=document.getElementById('showSectors').checked;
@@ -177,57 +243,29 @@ function fitSector(key){
 }
 function showSchool(id){
  const s=schools.find(x=>x.id===id);if(!s)return;
- document.querySelectorAll('.school').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
+ if(selectedId)setPinSize(selectedId,false);
+ selectedId=id;setPinSize(id,true);
+ renderDetail(s);
+ if(window.matchMedia('(max-width:800px)').matches)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'nearest'});
  if(!map)return;
  selectedSector=s.sector||null;refreshSectors();
  const b=s.sector&&fitSector(s.sector);
- if(b){b.extend({lat:s.lat,lng:s.lng});map.fitBounds(b,40);}else{map.setZoom(15);map.panTo({lat:s.lat,lng:s.lng});}
- info.setContent(schoolPopup(s));info.open({map,anchor:schoolMarkers[id]});
+ if(b){b.extend({lat:s.lat,lng:s.lng});map.fitBounds(b,40);}
+ else if(map.getZoom()<13||!map.getBounds()?.contains({lat:s.lat,lng:s.lng})){map.setZoom(14);map.panTo({lat:s.lat,lng:s.lng});}
 }
-function renderList(){
- const root=document.getElementById('schoolList');root.innerHTML='';
- const groups=[['paris','Public bilingual schools in Paris'],['intl','Public international sections in the suburbs'],['private','Private schools — sous contrat / status to check']];
- for(const [cat,title] of groups){
-  if(!visible(cat))continue;
-  const arr=schools.filter(s=>s.cat===cat);
-  const h=document.createElement('div');h.className='group-title';h.innerHTML=`<span>${title}</span><span>${arr.length}</span>`;root.appendChild(h);
-  for(const s of arr){
-   const d=document.createElement('div');d.className='school';d.dataset.id=s.id;
-   const tag=cat==='paris'?'public':cat==='intl'?'intl':'private';
-   const x=indicators[s.uai]||{};
-   const rep=x.rep_plus?'<span class="tag rep">REP+</span>':x.rep?'<span class="tag rep">REP</span>':'';
-   d.innerHTML=`<h3>${esc(s.name)} <span class="tag ${tag}">${cat==='paris'?'PUBLIC':cat==='intl'?'SECTION':'PRIVATE'}</span>${rep}</h3><div class="meta">${esc(s.city)} · ${esc(s.address)}</div><p><b>${esc(s.kind)}</b></p>${statsHtml(s)}<p>${esc(s.note)}</p><button data-id="${s.id}">${s.sector?'Show school and catchment area':'Show on map'}</button> <a target="_blank" rel="noopener" href="${s.src}">Source</a>`;
-   d.querySelector('button').addEventListener('click',()=>showSchool(s.id));root.appendChild(d);
-  }
- }
-}
-function applyFilters(){
- renderList();
- for(const s of schools){const m=schoolMarkers[s.id];if(m)m.map=visible(s.cat)?map:null;}
-}
-['showParis','showIntl','showPrivate'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
-document.getElementById('showSectors').addEventListener('change',refreshSectors);
-renderList();
 
 async function initMap(){
- const {Map,InfoWindow}=await google.maps.importLibrary('maps');
+ const {Map}=await google.maps.importLibrary('maps');
  const {AdvancedMarkerElement,PinElement}=await google.maps.importLibrary('marker');
  map=new Map(document.getElementById('map'),{center:{lat:48.8566,lng:2.3522},zoom:11,mapId:'DEMO_MAP_ID',streetViewControl:true,mapTypeControl:true,fullscreenControl:true,clickableIcons:false});
- info=new InfoWindow();
- info.addListener('closeclick',()=>{selectedSector=null;refreshSectors();document.querySelectorAll('.school.active').forEach(el=>el.classList.remove('active'));});
  for(const s of schools){
   const pin=new PinElement({background:colors[s.cat],borderColor:'#ffffff',glyphColor:'#ffffff',scale:.9});
-  const m=new AdvancedMarkerElement({map:visible(s.cat)?map:null,position:{lat:s.lat,lng:s.lng},title:s.name,content:pin,gmpClickable:true});
+  const m=new AdvancedMarkerElement({map:visible(s)?map:null,position:{lat:s.lat,lng:s.lng},title:s.name,content:pin,gmpClickable:true});
   m.addEventListener('gmp-click',()=>showSchool(s.id));
-  schoolMarkers[s.id]=m;
+  schoolMarkers[s.id]=m;schoolPins[s.id]=pin;
  }
  refreshSectors();
- map.data.addListener('click',e=>{
-  const f=e.feature,g=k=>f.getProperty(k);
-  const names=[g('lib_etab_1'),g('lib_etab_2'),g('lib_etab_3'),g('lib_etab_4')].filter(Boolean).join(', ');
-  info.setContent(`<b>Elementary catchment area · 2026–2027</b><br>${esc(g('libelle')||'')}<br>${esc(names)}`);
-  info.setPosition(e.latLng);info.open({map});
- });
+ map.data.addListener('click',e=>renderSectorDetail(e.feature));
  loadSectors();
 }
 
@@ -277,10 +315,10 @@ async function showAddressOnMap(p){
   const {AdvancedMarkerElement,PinElement}=await google.maps.importLibrary('marker');
   if(addressMarker)addressMarker.map=null;
   const pin=new PinElement({background:'#facc15',borderColor:'#111827',glyphColor:'#111827',scale:1.1});
-  addressMarker=new AdvancedMarkerElement({map,position:{lat:p.lat,lng:p.lng},title:'Address checked',content:pin,zIndex:1000});
-  selectedSector=null;refreshSectors();
+  addressMarker=new AdvancedMarkerElement({map,position:{lat:p.lat,lng:p.lng},title:'Address checked: '+p.label,content:pin,zIndex:1000});
+  if(selectedId)setPinSize(selectedId,false);
+  selectedId=null;selectedSector=null;refreshSectors();
   map.setZoom(15);map.panTo({lat:p.lat,lng:p.lng});
-  info.setContent('Address checked: '+esc(p.label));info.open({map,anchor:addressMarker});
  }catch(e){}
 }
 async function checkAddress(){
@@ -299,10 +337,11 @@ async function checkAddress(){
  }catch(e){box.textContent='Could not look up the address: '+e.message;}
 }
 
+buildFilters();
 (()=>{
  const s=document.createElement('script');
  s.src='https://maps.googleapis.com/maps/api/js?'+new URLSearchParams({key:GOOGLE_MAPS_KEY,v:'weekly',loading:'async',callback:'initMap',language:'en',region:'FR'});
- s.async=true;s.onerror=()=>showMapError('<b>Could not load Google Maps.</b> No network, or the script is blocked.');
+ s.async=true;s.onerror=()=>showGlobalError('<b>Could not load Google Maps.</b> No network, or the script is blocked.');
  document.head.appendChild(s);
 })();
 </script>
