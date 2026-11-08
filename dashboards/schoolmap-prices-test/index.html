@@ -797,6 +797,10 @@ function placesText(list){
  el.innerHTML=list.map(memberHtml).map(h=>`<section>${h}</section>`).join('');
  el.querySelectorAll('button,.explain,.ips-bar').forEach(x=>x.remove());
  el.querySelectorAll('a[href]').forEach(a=>{a.textContent=a.textContent.trim()+': '+a.href;});
+ el.querySelectorAll('.tag').forEach(x=>{x.style.textTransform='none';x.textContent=' · '+x.textContent.trim();});
+ el.querySelectorAll('.stats').forEach(x=>{x.style.display='block';});
+ el.querySelectorAll('.stats dt').forEach(x=>{x.style.display='inline';x.textContent=x.textContent.trim()+': ';});
+ el.querySelectorAll('.stats dd').forEach(x=>{x.style.display='inline';x.querySelectorAll('br').forEach(b=>b.replaceWith(' · '));x.after(document.createElement('br'));});
  document.body.appendChild(el);
  const out=[...el.querySelectorAll('section')].map(s=>s.innerText.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim()).join('\n\n----------\n\n');
  el.remove();return out;
