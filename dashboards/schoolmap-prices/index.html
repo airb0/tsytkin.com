@@ -208,6 +208,30 @@ function applyStaticTexts(){
  sw.addEventListener('click',e=>{const l=e.target.closest('a')?.dataset.lang;if(l){try{localStorage.setItem('schoolmap-lang',l);}catch(_){}}});
 }
 
+/* The filters come back on the next visit, in this browser only. Saved values are checked, so a stale or damaged entry falls back to the defaults. */
+const FILTERS_KEY='schoolmap-filters',FILTER_GROUPS=['grp-schools','grp-prices'];
+function saveFilters(){
+ const on=id=>document.getElementById(id)?.checked;
+ const groups={};for(const id of FILTER_GROUPS){const g=document.getElementById(id);if(g)groups[id]=g.open;}
+ try{localStorage.setItem(FILTERS_KEY,JSON.stringify({show,sectors:on('showSectors'),ips:minIps,prices:on('showPrices'),area:minArea,budget:maxBudget,walk:maxWalk,groups}));}catch(e){}
+}
+function restoreFilters(){
+ let s=null;try{s=JSON.parse(localStorage.getItem(FILTERS_KEY));}catch(e){}
+ if(!s||typeof s!=='object')return;
+ const inRange=(v,lo,hi,d)=>Number.isFinite(v)&&v>=lo&&v<=hi?v:d;
+ for(const c of CATS)if(typeof s.show?.[c]==='boolean'){show[c]=s.show[c];document.querySelector(`input[data-cat="${c}"]`).checked=show[c];}
+ if(typeof s.sectors==='boolean')document.getElementById('showSectors').checked=s.sectors;
+ minIps=inRange(s.ips,80,160,80);document.getElementById('ipsMin').value=minIps;
+ for(const id of FILTER_GROUPS){const g=document.getElementById(id);if(g&&typeof s.groups?.[id]==='boolean')g.open=s.groups[id];}
+ if(!PRICES)return;
+ if(typeof s.prices==='boolean'){document.getElementById('showPrices').checked=s.prices;document.getElementById('priceState').textContent=s.prices?T('on'):T('off');}
+ minArea=inRange(s.area,0,9999,0);maxBudget=inRange(s.budget,0,1e8,0);maxWalk=inRange(s.walk,0,30,0);
+ const set=(id,v)=>{document.getElementById(id).value=v;},max=id=>document.getElementById(id).max;
+ set('areaMin',minArea||'');set('areaRange',minArea);
+ set('budgetMax',maxBudget?fmt(maxBudget):'');set('budgetRange',maxBudget||max('budgetRange'));
+ set('walkRange',maxWalk||max('walkRange'));
+}
+
 function buildFilters(){
  const root=document.getElementById('filters');
  const row=(inner,expId,text)=>`<div class="frow">${inner}${infoBtn(expId)}</div><div class="explain" id="${expId}">${text}</div>`;
@@ -225,6 +249,10 @@ function buildFilters(){
   html+=grp('grp-prices',T('grpPrices'),p,`<label class="sw" title="${esc(T('priceSwitchTitle'))}"><span id="priceState">${T('on')}</span><input type="checkbox" id="showPrices" checked aria-label="${esc(T('priceSwitchTitle'))}"></label>`);
  }
  root.innerHTML=html;
+ restoreFilters();
+ root.addEventListener('input',saveFilters);
+ root.addEventListener('change',saveFilters);
+ root.addEventListener('toggle',saveFilters,true);
  root.querySelectorAll('input[data-cat]').forEach(i=>i.addEventListener('change',()=>{show[i.dataset.cat]=i.checked;applyFilters();}));
  document.getElementById('showSectors').addEventListener('change',refreshSectors);
  if(PRICES){
