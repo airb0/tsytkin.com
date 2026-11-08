@@ -50,6 +50,7 @@ aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid var(--li
 .slider input[type=range]{width:100%;accent-color:#17212b}
 .slider .scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
 .fit{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}.fit input{display:block;width:100%;margin-top:3px;padding:7px 8px;border:1px solid var(--line);border-radius:7px;font:inherit;font-size:14px;color:var(--ink)}
+.fit input[type=range]{padding:0;border:0;margin-top:8px;accent-color:#17212b}
 #fitStatus{font-size:12px;font-weight:600;margin:0 0 8px}#fitStatus:empty{display:none}
 .scale.three{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
 .ramp{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:2px 0 3px}.ramp i{flex:1}
@@ -219,7 +220,7 @@ function buildFilters(){
  let html=grp('grp-schools',T('grpSchools'),h);
  if(PRICES){
   let p=row(`<span style="flex:1">${T('priceRow')}</span>`,'exp-prices',T('priceExplain'));
-  p+=`<div class="slider"><div class="head"><span>${T('fitTitle')}</span>${infoBtn('exp-fit')}</div><div class="explain" id="exp-fit" style="margin:0 -10px 8px">${T('fitExplain')}</div><div class="fit"><label>${T('areaLabel')}<input id="areaMin" type="text" inputmode="numeric" autocomplete="off" placeholder="30"></label><label>${T('budgetLabel')}<input id="budgetMax" type="text" inputmode="numeric" autocomplete="off" placeholder="${fmt(250000)}"></label></div><div id="fitStatus"></div><div id="priceLegend"></div></div>`;
+  p+=`<div class="slider"><div class="head"><span>${T('fitTitle')}</span>${infoBtn('exp-fit')}</div><div class="explain" id="exp-fit" style="margin:0 -10px 8px">${T('fitExplain')}</div><div class="fit"><label>${T('areaLabel')}<input id="areaMin" type="text" inputmode="numeric" autocomplete="off" placeholder="30"><input id="areaRange" type="range" min="0" max="150" step="5" value="0" aria-label="${esc(T('areaLabel'))}"></label><label>${T('budgetLabel')}<input id="budgetMax" type="text" inputmode="numeric" autocomplete="off" placeholder="${fmt(250000)}"><input id="budgetRange" type="range" min="50000" max="1000000" step="10000" value="1000000" aria-label="${esc(T('budgetLabel'))}"></label></div><div id="fitStatus"></div><div id="priceLegend"></div></div>`;
   html+=grp('grp-prices',T('grpPrices'),p,`<label class="sw" title="${esc(T('priceSwitchTitle'))}"><span id="priceState">${T('on')}</span><input type="checkbox" id="showPrices" checked aria-label="${esc(T('priceSwitchTitle'))}"></label>`);
  }
  root.innerHTML=html;
@@ -232,8 +233,13 @@ function buildFilters(){
   sp.addEventListener('change',()=>{document.getElementById('priceState').textContent=sp.checked?T('on'):T('off');refreshPrices();});
   const num=el=>+String(el.value).replace(/\D/g,'')||0;
   const am=document.getElementById('areaMin'),bm=document.getElementById('budgetMax');
-  am.addEventListener('input',()=>{minArea=num(am);refreshPrices();});
-  bm.addEventListener('input',()=>{maxBudget=num(bm);refreshPrices();});
+  const ar=document.getElementById('areaRange'),br=document.getElementById('budgetRange');
+  let raf=0;const later=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(refreshPrices);};
+  am.addEventListener('input',()=>{minArea=num(am);ar.value=minArea;later();});
+  bm.addEventListener('input',()=>{maxBudget=num(bm);br.value=maxBudget||br.max;later();});
+  ar.addEventListener('input',()=>{minArea=+ar.value;am.value=minArea||'';later();});
+  /* Far right of the budget slider means no limit. */
+  br.addEventListener('input',()=>{const v=+br.value;maxBudget=v>=+br.max?0:v;bm.value=maxBudget?fmt(maxBudget):'';later();});
   bm.addEventListener('blur',()=>{if(maxBudget)bm.value=fmt(maxBudget);});
   renderPriceLegend();
  }
